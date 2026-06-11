@@ -99,154 +99,225 @@ export default function HeroScene() {
     if (!mount) return;
     const reduced = prefersReducedMotion();
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      45,
-      mount.clientWidth / mount.clientHeight,
-      0.1,
-      50
-    );
-    camera.position.set(0, 0, 6);
+    let cancelled = false;
+    let retryTimer = 0;
+    let attempts = 0;
+    let teardown: (() => void) | null = null;
 
-    let renderer: THREE.WebGLRenderer;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true,
-        powerPreference: "high-performance",
-      });
-    } catch {
-      return;
-    }
-    renderer.setSize(mount.clientWidth, mount.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    mount.appendChild(renderer.domElement);
-
-    const group = new THREE.Group();
-    scene.add(group);
-
-    const COUNT = 6500;
-    const positions = new Float32Array(COUNT * 3);
-    const rands = new Float32Array(COUNT);
-    const golden = Math.PI * (3 - Math.sqrt(5));
-    const R = 1.9;
-    for (let i = 0; i < COUNT; i++) {
-      const y = 1 - (i / (COUNT - 1)) * 2;
-      const radius = Math.sqrt(1 - y * y);
-      const theta = golden * i;
-      positions[i * 3] = Math.cos(theta) * radius * R;
-      positions[i * 3 + 1] = y * R;
-      positions[i * 3 + 2] = Math.sin(theta) * radius * R;
-      rands[i] = Math.random();
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute("aRand", new THREE.BufferAttribute(rands, 1));
-
-    const mat = new THREE.ShaderMaterial({
-      vertexShader: VERT,
-      fragmentShader: FRAG,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      uniforms: {
-        uTime: { value: 0 },
-        uSize: { value: 26 },
-        uAmp: { value: 0.45 },
-        uColorA: { value: new THREE.Color("#c8ff3e") },
-        uColorB: { value: new THREE.Color("#7b61ff") },
-      },
-    });
-    group.add(new THREE.Points(geo, mat));
-
-    // --- wireframe cage ---
-    const cageGeo = new THREE.IcosahedronGeometry(2.7, 1);
-    const cage = new THREE.LineSegments(
-      new THREE.WireframeGeometry(cageGeo),
-      new THREE.LineBasicMaterial({
-        color: new THREE.Color("#e9ebee"),
-        transparent: true,
-        opacity: 0.06,
-      })
-    );
-    group.add(cage);
-
-    const mouse = { x: 0, y: 0 };
-    const target = { rx: 0, ry: 0 };
-    const onPointer = (e: PointerEvent) => {
-      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = (e.clientY / window.innerHeight) * 2 - 1;
-    };
-    window.addEventListener("pointermove", onPointer, { passive: true });
-
-    const onResize = () => {
-      const w = mount.clientWidth;
-      const h = mount.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener("resize", onResize);
-
-    const placeGroup = () => {
-      group.position.x = window.innerWidth > 880 ? 1.6 : 0;
-      group.position.y = window.innerWidth > 880 ? 0.4 : 0.9;
-    };
-    placeGroup();
-    window.addEventListener("resize", placeGroup);
-
-    const clock = new THREE.Clock();
-    let raf = 0;
-    let visible = true;
-    const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible && !reduced) {
-        cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(tick);
+    const createRenderer = () => {
+      try {
+        return new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        });
+      } catch {
+        try {
+          // dual-GPU machines sometimes refuse high-performance right after
+          // a reload — the default adapter is a valid fallback
+          return new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        } catch {
+          return null;
+        }
       }
-    });
-    io.observe(mount);
-
-    const tick = () => {
-      if (!visible) return;
-      const t = clock.getElapsedTime();
-      mat.uniforms.uTime.value = t;
-
-      target.ry += ((mouse.x * 0.5 - target.ry) * 0.04);
-      target.rx += ((mouse.y * 0.35 - target.rx) * 0.04);
-      group.rotation.y = t * 0.08 + target.ry;
-      group.rotation.x = target.rx;
-      cage.rotation.y = -t * 0.05;
-      cage.rotation.z = t * 0.03;
-
-      const p = Math.min(window.scrollY / window.innerHeight, 1);
-      group.position.z = p * 1.8;
-      mat.uniforms.uAmp.value = 0.45 + p * 0.9;
-
-      renderer.render(scene, camera);
-      raf = requestAnimationFrame(tick);
     };
 
-    if (reduced) {
-      renderer.render(scene, camera);
-    } else {
-      tick();
-    }
+    const init = (): boolean => {
+      const renderer = createRenderer();
+      if (!renderer) return false;
+      if (renderer.getContext().isContextLost()) {
+        // born dead — GPU still tearing down the previous page's context
+        renderer.forceContextLoss();
+        renderer.dispose();
+        return false;
+      }
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        45,
+        mount.clientWidth / mount.clientHeight,
+        0.1,
+        50
+      );
+      camera.position.set(0, 0, 6);
+
+      renderer.setSize(mount.clientWidth, mount.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      mount.appendChild(renderer.domElement);
+
+      const group = new THREE.Group();
+      scene.add(group);
+
+      const COUNT = 6500;
+      const positions = new Float32Array(COUNT * 3);
+      const rands = new Float32Array(COUNT);
+      const golden = Math.PI * (3 - Math.sqrt(5));
+      const R = 1.9;
+      for (let i = 0; i < COUNT; i++) {
+        const y = 1 - (i / (COUNT - 1)) * 2;
+        const radius = Math.sqrt(1 - y * y);
+        const theta = golden * i;
+        positions[i * 3] = Math.cos(theta) * radius * R;
+        positions[i * 3 + 1] = y * R;
+        positions[i * 3 + 2] = Math.sin(theta) * radius * R;
+        rands[i] = Math.random();
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute("aRand", new THREE.BufferAttribute(rands, 1));
+
+      const mat = new THREE.ShaderMaterial({
+        vertexShader: VERT,
+        fragmentShader: FRAG,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+          uTime: { value: 0 },
+          uSize: { value: 26 },
+          uAmp: { value: 0.45 },
+          uColorA: { value: new THREE.Color("#c8ff3e") },
+          uColorB: { value: new THREE.Color("#7b61ff") },
+        },
+      });
+      group.add(new THREE.Points(geo, mat));
+
+      // --- wireframe cage ---
+      const cageGeo = new THREE.IcosahedronGeometry(2.7, 1);
+      const cage = new THREE.LineSegments(
+        new THREE.WireframeGeometry(cageGeo),
+        new THREE.LineBasicMaterial({
+          color: new THREE.Color("#e9ebee"),
+          transparent: true,
+          opacity: 0.06,
+        })
+      );
+      group.add(cage);
+
+      const mouse = { x: 0, y: 0 };
+      const target = { rx: 0, ry: 0 };
+      const onPointer = (e: PointerEvent) => {
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = (e.clientY / window.innerHeight) * 2 - 1;
+      };
+      window.addEventListener("pointermove", onPointer, { passive: true });
+
+      const onResize = () => {
+        const w = mount.clientWidth;
+        const h = mount.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      };
+      window.addEventListener("resize", onResize);
+
+      const placeGroup = () => {
+        group.position.x = window.innerWidth > 880 ? 1.6 : 0;
+        group.position.y = window.innerWidth > 880 ? 0.4 : 0.9;
+      };
+      placeGroup();
+      window.addEventListener("resize", placeGroup);
+
+      const clock = new THREE.Clock();
+      let raf = 0;
+      let visible = true;
+      const io = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible && !reduced) {
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(tick);
+        }
+      });
+      io.observe(mount);
+
+      const tick = () => {
+        if (!visible) return;
+        const t = clock.getElapsedTime();
+        mat.uniforms.uTime.value = t;
+
+        target.ry += ((mouse.x * 0.5 - target.ry) * 0.04);
+        target.rx += ((mouse.y * 0.35 - target.rx) * 0.04);
+        group.rotation.y = t * 0.08 + target.ry;
+        group.rotation.x = target.rx;
+        cage.rotation.y = -t * 0.05;
+        cage.rotation.z = t * 0.03;
+
+        const p = Math.min(window.scrollY / window.innerHeight, 1);
+        group.position.z = p * 1.8;
+        mat.uniforms.uAmp.value = 0.45 + p * 0.9;
+
+        renderer.render(scene, camera);
+        raf = requestAnimationFrame(tick);
+      };
+
+      // if the GPU evicts our context (reload churn, too many contexts,
+      // driver reset), preventDefault lets the browser restore it — re-kick
+      // the loop on restore instead of staying blank forever
+      const canvas = renderer.domElement;
+      const onContextLost = (e: Event) => e.preventDefault();
+      const onContextRestored = () => {
+        if (reduced) {
+          renderer.render(scene, camera);
+        } else {
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(tick);
+        }
+      };
+      canvas.addEventListener("webglcontextlost", onContextLost);
+      canvas.addEventListener("webglcontextrestored", onContextRestored);
+
+      // React cleanup never runs on a page reload — release the GPU context
+      // at pagehide so the next page never competes with this one for it
+      const onPageHide = () => renderer.forceContextLoss();
+      window.addEventListener("pagehide", onPageHide);
+
+      if (reduced) {
+        renderer.render(scene, camera);
+      } else {
+        tick();
+      }
+
+      teardown = () => {
+        cancelAnimationFrame(raf);
+        io.disconnect();
+        window.removeEventListener("pointermove", onPointer);
+        window.removeEventListener("resize", onResize);
+        window.removeEventListener("resize", placeGroup);
+        window.removeEventListener("pagehide", onPageHide);
+        canvas.removeEventListener("webglcontextlost", onContextLost);
+        canvas.removeEventListener("webglcontextrestored", onContextRestored);
+        geo.dispose();
+        mat.dispose();
+        cageGeo.dispose();
+        cage.geometry.dispose();
+        (cage.material as THREE.Material).dispose();
+        renderer.dispose();
+        // dispose() alone never frees the GPU context — leaked contexts make
+        // the browser evict the live one on reload, blanking the sphere
+        renderer.forceContextLoss();
+        mount.removeChild(renderer.domElement);
+      };
+      return true;
+    };
+
+    // a same-tab reload can transiently starve WebGL of GPU memory while the
+    // previous page is torn down, so a failed init retries instead of bailing
+    const tryInit = () => {
+      if (cancelled || init()) return;
+      attempts += 1;
+      if (attempts < 8) {
+        retryTimer = window.setTimeout(tryInit, 300);
+      } else {
+        console.warn("HeroScene: WebGL unavailable, skipping 3D scene");
+      }
+    };
+    tryInit();
 
     return () => {
-      cancelAnimationFrame(raf);
-      io.disconnect();
-      window.removeEventListener("pointermove", onPointer);
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("resize", placeGroup);
-      geo.dispose();
-      mat.dispose();
-      cageGeo.dispose();
-      cage.geometry.dispose();
-      (cage.material as THREE.Material).dispose();
-      renderer.dispose();
-      renderer.forceContextLoss();
-      mount.removeChild(renderer.domElement);
+      cancelled = true;
+      window.clearTimeout(retryTimer);
+      teardown?.();
+      teardown = null;
     };
   }, []);
 
