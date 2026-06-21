@@ -21,13 +21,31 @@ export default function App() {
     const smoother = ScrollSmoother.create({
       wrapper: "#smooth-wrapper",
       content: "#smooth-content",
-      smooth: 1.2,
+      smooth: 1.1,
       effects: true,
     });
     if (import.meta.env.DEV) (window as unknown as { __smoother: unknown }).__smoother = smoother;
-    document.fonts.ready.then(() => ScrollTrigger.refresh());
-    return () => smoother.kill();
+    const refresh = () => ScrollTrigger.refresh();
+    document.fonts.ready.then(refresh);
+    window.addEventListener("load", refresh);
+    return () => {
+      window.removeEventListener("load", refresh);
+      smoother.kill();
+    };
   }, []);
+
+  // Once the preloader unmounts and layout is final, recompute every trigger's
+  // position. Section reveals are created at mount (before ScrollSmoother and
+  // before the preloader clears), so without this refresh their start points
+  // are stale and reveals can stay stuck hidden.
+  useGSAP(
+    () => {
+      if (!loaded || prefersReducedMotion()) return;
+      const id = requestAnimationFrame(() => ScrollTrigger.refresh());
+      return () => cancelAnimationFrame(id);
+    },
+    { dependencies: [loaded] }
+  );
 
   return (
     <>
@@ -47,7 +65,6 @@ export default function App() {
           <Footer />
         </div>
       </div>
-      <div className="grain" aria-hidden="true" />
     </>
   );
 }

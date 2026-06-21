@@ -2,8 +2,11 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { prefersReducedMotion } from "../lib/gsap";
 
+/* The original particle sphere, re-skinned monochrome: a fibonacci point cloud
+   displaced by simplex noise inside a faint wireframe cage. White highlights
+   over grey — no hue. Reacts to cursor and scroll. */
+
 const VERT = /* glsl */ `
-// Ashima simplex noise (3D)
 vec3 mod289(vec3 x){return x - floor(x * (1.0/289.0)) * 289.0;}
 vec4 mod289(vec4 x){return x - floor(x * (1.0/289.0)) * 289.0;}
 vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
@@ -85,8 +88,8 @@ void main() {
   float d = length(uv);
   float alpha = smoothstep(0.5, 0.05, d);
   vec3 color = mix(uColorB, uColorA, vNoise);
-  // sparkle: a fraction of particles run hotter
-  color += step(0.92, vRand) * 0.6;
+  // a fraction of particles burn brighter (white sparkle)
+  color += step(0.93, vRand) * 0.5;
   gl_FragColor = vec4(color, alpha * 0.85);
 }
 `;
@@ -106,15 +109,9 @@ export default function HeroScene() {
 
     const createRenderer = () => {
       try {
-        return new THREE.WebGLRenderer({
-          antialias: true,
-          alpha: true,
-          powerPreference: "high-performance",
-        });
+        return new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
       } catch {
         try {
-          // dual-GPU machines sometimes refuse high-performance right after
-          // a reload — the default adapter is a valid fallback
           return new THREE.WebGLRenderer({ antialias: true, alpha: true });
         } catch {
           return null;
@@ -126,19 +123,13 @@ export default function HeroScene() {
       const renderer = createRenderer();
       if (!renderer) return false;
       if (renderer.getContext().isContextLost()) {
-        // born dead — GPU still tearing down the previous page's context
         renderer.forceContextLoss();
         renderer.dispose();
         return false;
       }
 
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(
-        45,
-        mount.clientWidth / mount.clientHeight,
-        0.1,
-        50
-      );
+      const camera = new THREE.PerspectiveCamera(45, mount.clientWidth / mount.clientHeight, 0.1, 50);
       camera.position.set(0, 0, 6);
 
       renderer.setSize(mount.clientWidth, mount.clientHeight);
@@ -152,14 +143,14 @@ export default function HeroScene() {
       const positions = new Float32Array(COUNT * 3);
       const rands = new Float32Array(COUNT);
       const golden = Math.PI * (3 - Math.sqrt(5));
-      const R = 1.9;
+      const Rad = 1.9;
       for (let i = 0; i < COUNT; i++) {
         const y = 1 - (i / (COUNT - 1)) * 2;
         const radius = Math.sqrt(1 - y * y);
         const theta = golden * i;
-        positions[i * 3] = Math.cos(theta) * radius * R;
-        positions[i * 3 + 1] = y * R;
-        positions[i * 3 + 2] = Math.sin(theta) * radius * R;
+        positions[i * 3] = Math.cos(theta) * radius * Rad;
+        positions[i * 3 + 1] = y * Rad;
+        positions[i * 3 + 2] = Math.sin(theta) * radius * Rad;
         rands[i] = Math.random();
       }
       const geo = new THREE.BufferGeometry();
@@ -176,21 +167,16 @@ export default function HeroScene() {
           uTime: { value: 0 },
           uSize: { value: 26 },
           uAmp: { value: 0.45 },
-          uColorA: { value: new THREE.Color("#c8ff3e") },
-          uColorB: { value: new THREE.Color("#7b61ff") },
+          uColorA: { value: new THREE.Color("#ffffff") },
+          uColorB: { value: new THREE.Color("#4b5059") },
         },
       });
       group.add(new THREE.Points(geo, mat));
 
-      // --- wireframe cage ---
       const cageGeo = new THREE.IcosahedronGeometry(2.7, 1);
       const cage = new THREE.LineSegments(
         new THREE.WireframeGeometry(cageGeo),
-        new THREE.LineBasicMaterial({
-          color: new THREE.Color("#e9ebee"),
-          transparent: true,
-          opacity: 0.06,
-        })
+        new THREE.LineBasicMaterial({ color: new THREE.Color("#e9ebee"), transparent: true, opacity: 0.05 })
       );
       group.add(cage);
 
@@ -203,11 +189,11 @@ export default function HeroScene() {
       window.addEventListener("pointermove", onPointer, { passive: true });
 
       const onResize = () => {
-        const w = mount.clientWidth;
-        const h = mount.clientHeight;
-        camera.aspect = w / h;
+        const wv = mount.clientWidth;
+        const hv = mount.clientHeight;
+        camera.aspect = wv / hv;
         camera.updateProjectionMatrix();
-        renderer.setSize(w, h);
+        renderer.setSize(wv, hv);
       };
       window.addEventListener("resize", onResize);
 
@@ -235,8 +221,8 @@ export default function HeroScene() {
         const t = clock.getElapsedTime();
         mat.uniforms.uTime.value = t;
 
-        target.ry += ((mouse.x * 0.5 - target.ry) * 0.04);
-        target.rx += ((mouse.y * 0.35 - target.rx) * 0.04);
+        target.ry += (mouse.x * 0.5 - target.ry) * 0.04;
+        target.rx += (mouse.y * 0.35 - target.rx) * 0.04;
         group.rotation.y = t * 0.08 + target.ry;
         group.rotation.x = target.rx;
         cage.rotation.y = -t * 0.05;
@@ -250,32 +236,22 @@ export default function HeroScene() {
         raf = requestAnimationFrame(tick);
       };
 
-      // if the GPU evicts our context (reload churn, too many contexts,
-      // driver reset), preventDefault lets the browser restore it — re-kick
-      // the loop on restore instead of staying blank forever
       const canvas = renderer.domElement;
       const onContextLost = (e: Event) => e.preventDefault();
       const onContextRestored = () => {
-        if (reduced) {
-          renderer.render(scene, camera);
-        } else {
+        if (reduced) renderer.render(scene, camera);
+        else {
           cancelAnimationFrame(raf);
           raf = requestAnimationFrame(tick);
         }
       };
       canvas.addEventListener("webglcontextlost", onContextLost);
       canvas.addEventListener("webglcontextrestored", onContextRestored);
-
-      // React cleanup never runs on a page reload — release the GPU context
-      // at pagehide so the next page never competes with this one for it
       const onPageHide = () => renderer.forceContextLoss();
       window.addEventListener("pagehide", onPageHide);
 
-      if (reduced) {
-        renderer.render(scene, camera);
-      } else {
-        tick();
-      }
+      if (reduced) renderer.render(scene, camera);
+      else tick();
 
       teardown = () => {
         cancelAnimationFrame(raf);
@@ -292,24 +268,17 @@ export default function HeroScene() {
         cage.geometry.dispose();
         (cage.material as THREE.Material).dispose();
         renderer.dispose();
-        // dispose() alone never frees the GPU context — leaked contexts make
-        // the browser evict the live one on reload, blanking the sphere
         renderer.forceContextLoss();
-        mount.removeChild(renderer.domElement);
+        if (canvas.parentNode === mount) mount.removeChild(canvas);
       };
       return true;
     };
 
-    // a same-tab reload can transiently starve WebGL of GPU memory while the
-    // previous page is torn down, so a failed init retries instead of bailing
     const tryInit = () => {
       if (cancelled || init()) return;
       attempts += 1;
-      if (attempts < 8) {
-        retryTimer = window.setTimeout(tryInit, 300);
-      } else {
-        console.warn("HeroScene: WebGL unavailable, skipping 3D scene");
-      }
+      if (attempts < 8) retryTimer = window.setTimeout(tryInit, 300);
+      else console.warn("HeroScene: WebGL unavailable, skipping 3D scene");
     };
     tryInit();
 

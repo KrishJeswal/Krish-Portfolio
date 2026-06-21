@@ -3,46 +3,49 @@ import { profile } from "../data/content";
 import { ScrollSmoother } from "../lib/gsap";
 
 export default function Footer() {
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState("--:--:--");
 
   useEffect(() => {
-    const update = () =>
-      setTime(
-        new Intl.DateTimeFormat("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZone: "Asia/Kolkata",
-        }).format(new Date())
-      );
+    const fmt = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Kolkata",
+    });
+    const update = () => setTime(fmt.format(new Date()));
     update();
     const id = setInterval(update, 1000);
     return () => clearInterval(id);
   }, []);
 
+  const toTop = () => {
+    const smoother = ScrollSmoother.get();
+    if (smoother) smoother.scrollTo(0, true);
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="footer">
-      <div
-        className="footer__giant"
-        data-cursor
-        onClick={() => ScrollSmoother.get()?.scrollTo(0, true)}
-        title="Back to top"
-      >
+      <div className="footer__giant" data-cursor onClick={toTop} title="Back to top">
         Krish Jeswal
       </div>
       <div className="footer__row">
-        <p>local time {time} IST</p>
+        <p className="tnum">local time {time} IST</p>
         <p>© {new Date().getFullYear()} Krish Jeswal — Bengaluru, IN</p>
         <ul className="footer__socials">
           <li>
-            <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a>
+            <a href={profile.github} target="_blank" rel="noreferrer">
+              GitHub
+            </a>
           </li>
           <li>
-            <a href={profile.website} target="_blank" rel="noreferrer">Website</a>
+            <a href={profile.linkedin} target="_blank" rel="noreferrer">
+              LinkedIn
+            </a>
           </li>
           <li>
-            <a href={`mailto:${profile.email}`}>Email</a>
+            <a href={`mailto:${profile.email}`}>Mail</a>
           </li>
         </ul>
       </div>
