@@ -13,27 +13,23 @@ export default function Contact() {
     () => {
       if (prefersReducedMotion()) return;
       gsap.fromTo(
-        ".contact__title .line-inner",
+        ".contact__title .ln > span",
         { yPercent: 110 },
         {
           yPercent: 0,
-          duration: 1.1,
-          stagger: 0.12,
+          duration: 1.05,
+          stagger: 0.1,
           ease: "power4.out",
-          scrollTrigger: { trigger: ".contact__title", start: "top 85%" },
+          scrollTrigger: { trigger: ".contact__title", start: "top 88%", once: true },
         }
       );
-      gsap.fromTo(
-        ".contact__grid",
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: { trigger: ".contact__grid", start: "top 85%" },
-        }
-      );
+      gsap.from(".contact__grid", {
+        y: 44,
+        opacity: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ".contact__grid", start: "top 88%", once: true },
+      });
     },
     { scope: rootRef }
   );
@@ -51,35 +47,30 @@ export default function Contact() {
       if (res.ok) {
         setStatus("ok");
         form.reset();
-      } else {
-        setStatus("err");
-      }
+      } else setStatus("err");
     } catch {
       setStatus("err");
     }
   };
 
   return (
-    <section className="section contact" id="contact" ref={rootRef}>
+    <section className="sec contact" id="contact" ref={rootRef}>
       <h2 className="contact__title">
-        <span className="line-mask" style={{ display: "block", overflow: "hidden" }}>
-          <span className="line-inner" style={{ display: "block" }}>
-            Let's build
-          </span>
+        <span className="ln">
+          <span>Open a</span>
         </span>
-        <span className="line-mask" style={{ display: "block", overflow: "hidden" }}>
-          <span className="line-inner outline" style={{ display: "block" }}>
-            something loud
-          </span>
+        <span className="ln">
+          <span className="stroke">channel</span>
         </span>
       </h2>
+
       <div className="contact__grid">
-        <div className="contact__info">
-          <p>
-            Open to research collaborations, internship opportunities and conversations about
-            Software Architecture, Machine Learning Systems or anything with embedded electronics involved.
+        <div>
+          <p className="contact__lead">
+            Open to research collaborations, internships, and conversations about ML systems, software
+            architecture, or anything with silicon underneath.
           </p>
-          <ul className="contact__channels">
+          <ul className="channels">
             <li>
               <a href={`mailto:${profile.email}`} data-cursor>
                 <span>email</span>
@@ -106,28 +97,31 @@ export default function Contact() {
             </li>
           </ul>
         </div>
+
         <form onSubmit={onSubmit}>
-          <div className="form__field">
+          <div className="field-row">
             <label htmlFor="cf-name">Name</label>
-            <input id="cf-name" type="text" name="name" required autoComplete="name" />
+            <input id="cf-name" type="text" name="name" required autoComplete="name" placeholder="Who's transmitting?" />
           </div>
-          <div className="form__field">
+          <div className="field-row">
             <label htmlFor="cf-email">Email</label>
-            <input id="cf-email" type="email" name="email" required autoComplete="email" />
+            <input id="cf-email" type="email" name="email" required autoComplete="email" placeholder="you@domain.com" />
           </div>
-          <div className="form__field">
+          <div className="field-row">
             <label htmlFor="cf-msg">Message</label>
-            <textarea id="cf-msg" name="message" rows={4} required />
+            <textarea id="cf-msg" name="message" rows={4} required placeholder="The signal…" />
           </div>
-          <button className="form__submit" type="submit" disabled={status === "sending"}>
-            {status === "sending" ? "Transmitting…" : "Send signal"} <span aria-hidden="true">→</span>
+          <button className="submit" type="submit" disabled={status === "sending"} data-cursor>
+            {status === "sending" ? "Transmitting…" : "Transmit"} <span aria-hidden="true">→</span>
           </button>
           {status === "ok" && (
-            <p className="form__status ok">// message received. I'll get back to you soon.</p>
+            <p className="form-status ok" role="status">
+              Signal received — I’ll respond shortly.
+            </p>
           )}
           {status === "err" && (
-            <p className="form__status err">
-              // transmission failed — mail me directly at {profile.email}
+            <p className="form-status err" role="alert">
+              Transmission failed — reach me directly at {profile.email}.
             </p>
           )}
         </form>

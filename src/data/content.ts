@@ -1,91 +1,127 @@
 export const profile = {
   name: "Krish Jeswal",
-  role: "Full-Stack Developer & ML Scientist",
-  tagline: "Electronics & Telecom Undergrad",
+  role: "Machine-Learning Researcher · Full-Stack Engineer",
+  tagline: "Electronics & Telecommunication, RVCE Bengaluru",
   email: "connectwithkjeswal@gmail.com",
   phone: "+91 87502 08208",
   website: "https://krish-jeswal.web.app",
   github: "https://github.com/KrishJeswal",
+  linkedin: "https://www.linkedin.com/in/krishjeswal/",
   location: "Bengaluru, India",
+  coords: "12.97°N 77.59°E",
+  // ML-first positioning. Every fact below is real; only the framing is tuned.
   summary:
-    "Undergrad researcher and full-stack engineer targeting IEEE ISCAS 2026 for ML side-channel attack work on masked AES-128. I build and ship production AI systems — currently a RAG pipeline on GCP Cloud Run using Qdrant, LangChain and the Gemini API. My stack spans PyTorch, FastAPI, React/TypeScript and embedded systems.",
+    "I pull signal out of noise. My research recovers a secret AES key from the faint power a chip leaks — an ML side-channel attack submitted to IEEE — and the same instinct runs the production systems I ship: RAG pipelines on GCP, ML services that survive contact with real data. Underneath it all sits the electronics I trained on: FPGAs, embedded silicon, the physical layer.",
 };
 
+// The three layers, in the order Krish works in them: research first,
+// systems second, silicon third. This is a real ranked hierarchy, so the
+// numbers carry meaning rather than decorate.
+export type Layer = { id: string; channel: string; title: string; body: string };
+
+export const layers: Layer[] = [
+  {
+    id: "01",
+    channel: "INFERENCE",
+    title: "Machine-learning researcher",
+    body: "Side-channel attacks, model interpretability, and ML that holds up under scrutiny. Targeting IEEE for masked-AES leakage work.",
+  },
+  {
+    id: "02",
+    channel: "SYSTEMS",
+    title: "Full-stack engineer",
+    body: "RAG pipelines, typed APIs, and cloud deployments shipped end to end — from architecture to production on GCP.",
+  },
+  {
+    id: "03",
+    channel: "SILICON",
+    title: "Electronics & telecom",
+    body: "FPGAs, STM32, UART and CAN — the physical layer the rest of the stack quietly stands on.",
+  },
+];
+
 export type Project = {
-  index: string;
+  capture: string;
+  domain: string;
   title: string;
   subtitle: string;
   description: string;
   metric: string;
   metricLabel: string;
   tags: string[];
-  size: "lg" | "md";
-  motif: "trace" | "noir" | "grid" | "net";
+  featured: boolean;
+  // a minimal figure of the project's actual method:
+  // leak = SHAP leakage localization, retrieve = vector k-NN,
+  // map = column→schema mapping, pipeline = CI/CD stages
+  figure: "leak" | "retrieve" | "map" | "pipeline";
+  link?: string;
 };
 
 export const projects: Project[] = [
   {
-    index: "01",
+    capture: "CH·01",
+    domain: "ML · SIDE-CHANNEL",
     title: "CipherTrace",
-    subtitle: "ML side-channel attack on masked AES-128",
+    subtitle: "Recovering an AES-128 key from power leakage",
     description:
-      "Profiling attack on the ASCAD dataset (50k traces) evaluating 72 classifier configurations across 6 models × 3 POI strategies. Showed Identity labels collapse Guessing Entropy to 0.46 vs 12.03 for Hamming Weight — overturning a standard SCA assumption — with SHAP-based leakage localization. Submitted to IEEE Access.",
-    metric: "GE 0.46",
-    metricLabel: "guessing entropy @ identity labels",
+      "A profiling attack on the ASCAD dataset (50k traces) across 72 classifier configurations — 6 models × 3 point-of-interest strategies. Identity labels collapse Guessing Entropy to 0.46 against 12.03 for Hamming Weight, overturning a standard SCA assumption, with SHAP localizing exactly where the chip leaks. Submitted to IEEE Access.",
+    metric: "0.46",
+    metricLabel: "guessing entropy · identity labels",
     tags: ["PyTorch", "scikit-learn", "SHAP", "ASCAD", "MLP + PCA"],
-    size: "lg",
-    motif: "trace",
+    featured: true,
+    figure: "leak",
   },
   {
-    index: "02",
+    capture: "CH·02",
+    domain: "ML · RAG",
     title: "Code Noir",
-    subtitle: "Commit history → genre fiction, via RAG",
+    subtitle: "Commit history rewritten as genre fiction",
     description:
-      "A RAG pipeline that rewrites GitHub commit history as noir and sci-fi fiction for developer explainability. BGE-large embeddings in Qdrant retrieving at sub-100ms, Gemini orchestrated through LangChain, FastAPI on GCP Cloud Run with Docker, React/TypeScript frontend and Firebase auth.",
+      "A retrieval pipeline that turns a repo's git history into noir and sci-fi fiction for developer explainability. BGE-large embeddings in Qdrant retrieve under 100ms, Gemini is orchestrated through LangChain, and FastAPI runs on GCP Cloud Run behind a React/TypeScript front end with Firebase auth.",
     metric: "<100ms",
     metricLabel: "vector retrieval latency",
     tags: ["RAG", "Qdrant", "LangChain", "Gemini", "Cloud Run", "FastAPI"],
-    size: "md",
-    motif: "noir",
+    featured: false,
+    figure: "retrieve",
   },
   {
-    index: "03",
+    capture: "CH·03",
+    domain: "ML · DOCUMENT AI",
     title: "Intelligent Excel Parser",
-    subtitle: "LLM-powered enterprise .xlsx ingestion",
+    subtitle: "LLM ingestion for messy enterprise .xlsx",
     description:
-      "FastAPI + Gemini service that kills manual column remapping — 94% mapping accuracy across 300+ header variants with a SequenceMatcher fallback. Pydantic v2 schema validation, per-cell confidence scores on an interactive dashboard, cutting data-cleaning overhead by ~80%.",
+      "A FastAPI + Gemini service that kills manual column remapping — 94% mapping accuracy across 300+ header variants, with a SequenceMatcher fallback when the model is unsure. Pydantic v2 validates every schema and surfaces per-cell confidence on an interactive dashboard, cutting data-cleaning overhead by roughly 80%.",
     metric: "94%",
-    metricLabel: "mapping accuracy, 300+ variants",
+    metricLabel: "mapping accuracy · 300+ variants",
     tags: ["FastAPI", "Gemini", "Pydantic v2", "openpyxl"],
-    size: "md",
-    motif: "grid",
+    featured: false,
+    figure: "map",
   },
   {
-    index: "04",
+    capture: "CH·04",
+    domain: "LEAD · FULL-STACK",
     title: "IETE Student Forum",
-    subtitle: "Official chapter website — led end to end",
+    subtitle: "Official chapter site, led end to end",
     description:
-      "Led the development team architecting and shipping the official IETE Student Forum site. Defined the full stack, established CI/CD via GitHub Actions, and drove delivery from system design to production — with code review workflows adopted across the chapter.",
+      "Led the development team that architected and shipped the official IETE Student Forum site. Defined the full stack, set up CI/CD through GitHub Actions, and drove delivery from system design to production — with code-review workflows that the chapter now runs by default.",
     metric: "CI/CD",
     metricLabel: "github actions → production",
     tags: ["React", "TypeScript", "Tailwind", "PostgreSQL"],
-    size: "lg",
-    motif: "net",
+    featured: false,
+    figure: "pipeline",
   },
 ];
 
+// Stack ordered ML-first, mirroring the layer hierarchy. Electronics last —
+// the substrate, not the headline.
 export const stack: { category: string; items: string[] }[] = [
-  {
-    category: "Languages",
-    items: ["Python", "C", "JavaScript", "TypeScript", "SQL", "Assembly", "Verilog"],
-  },
   {
     category: "AI / ML",
     items: ["PyTorch", "scikit-learn", "RAG", "LangChain", "Hugging Face", "XGBoost", "Gemini API", "SHAP"],
   },
   {
     category: "Web & Backend",
-    items: ["React", "Tailwind CSS", "Vite", "Three.js", "Node.js", "Express", "FastAPI", "Flask", "Docker"],
+    items: ["React", "TypeScript", "FastAPI", "Node.js", "Express", "Flask", "Tailwind CSS", "Vite", "Three.js", "Docker"],
   },
   {
     category: "Data & Cloud",
@@ -94,6 +130,10 @@ export const stack: { category: string; items: string[] }[] = [
   {
     category: "Databases & Tools",
     items: ["PostgreSQL", "MongoDB", "Qdrant", "Supabase", "Firebase", "Git", "CI/CD"],
+  },
+  {
+    category: "Languages",
+    items: ["Python", "C", "JavaScript", "TypeScript", "SQL", "Assembly", "Verilog"],
   },
   {
     category: "Electronics",
@@ -110,40 +150,41 @@ export type TimelineEntry = {
 };
 
 export const timeline: TimelineEntry[] = [
-  { period: "Jun 2025 — Present",
+  {
+    period: "Jun 2025 — Present",
     title: "Research & Projects",
     org: "Google Developer Groups",
-    body: "Designed two end-to-end GCP projects (Vertex AI fine-tuning, Cloud Run deployment) for Google Cloud Study Jams. Mentored 15+ teams at Vision 2047 Hackathon on ML pipeline architecture, and hosted a DevSprint on open source and cybersecurity fundamentals.",
+    body: "Built two end-to-end GCP projects (Vertex AI fine-tuning, Cloud Run deployment) for Google Cloud Study Jams. Mentored 15+ teams at the Vision 2047 hackathon on ML pipeline architecture, and ran a DevSprint on open source and cybersecurity fundamentals.",
     tag: "experience",
   },
   {
     period: "Nov 2025 — Present",
     title: "Development Lead",
     org: "IETE Student Forum",
-    body: "Leading the dev team behind the official chapter website — full-stack definition, CI/CD via GitHub Actions, and code review culture adopted across the chapter.",
+    body: "Leading the dev team behind the official chapter site — full-stack definition, CI/CD through GitHub Actions, and a code-review culture the chapter adopted across its work.",
     tag: "experience",
   },
   {
     period: "2024 — 2028",
     title: "B.E. Electronics & Telecommunication",
     org: "R.V. College of Engineering, Bengaluru",
-    body: "Undergraduate engineering across signals, silicon and software — from Verilog and FPGA labs to production cloud systems.",
+    body: "Engineering across signals, silicon and software — from Verilog and FPGA labs to production cloud systems.",
     tag: "education",
   },
   {
     period: "2021 — 2023",
     title: "Higher Secondary",
     org: "Amity International School, Ghaziabad",
-    body: "Physics, Chemistry, Maths and Computer Science — where the obsession with making machines do things began.",
+    body: "Physics, Chemistry, Maths and Computer Science — where making machines do things stopped being a hobby.",
     tag: "education",
-  }
+  },
 ];
 
 export const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
+  { label: "Thesis", href: "#thesis" },
+  { label: "Work", href: "#work" },
   { label: "Stack", href: "#stack" },
-  { label: "Timeline", href: "#timeline" },
+  { label: "Log", href: "#log" },
   { label: "Contact", href: "#contact" },
 ];
 

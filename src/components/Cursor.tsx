@@ -2,45 +2,52 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion } from "../lib/gsap";
 
+/* A scope probe: crosshair + live coordinate readout that "locks" with corner
+   brackets over interactive targets. Functional instrument language, not a
+   decorative dot-and-ring. */
 export default function Cursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     if (prefersReducedMotion()) return;
     if (window.matchMedia("(hover: none)").matches) return;
 
-    const dot = dotRef.current!;
-    const ring = ringRef.current!;
-    gsap.set([dot, ring], { xPercent: -50, yPercent: -50, x: -100, y: -100 });
+    const root = rootRef.current!;
+    document.documentElement.classList.add("has-scope-cursor");
 
-    const ringX = gsap.quickTo(ring, "x", { duration: 0.4, ease: "power3" });
-    const ringY = gsap.quickTo(ring, "y", { duration: 0.4, ease: "power3" });
+    const xTo = gsap.quickTo(root, "x", { duration: 0.12, ease: "power3" });
+    const yTo = gsap.quickTo(root, "y", { duration: 0.12, ease: "power3" });
 
     const onMove = (e: PointerEvent) => {
-      gsap.set(dot, { x: e.clientX, y: e.clientY });
-      ringX(e.clientX);
-      ringY(e.clientY);
+      xTo(e.clientX);
+      yTo(e.clientY);
     };
 
     const onOver = (e: PointerEvent) => {
       const t = e.target as HTMLElement;
-      const interactive = t.closest("a, button, [data-cursor]");
-      ring.classList.toggle("is-hover", !!interactive);
+      const hot = !!t.closest("a, button, input, textarea, [data-cursor]");
+      root.classList.toggle("is-hot", hot);
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("pointerover", onOver, { passive: true });
     return () => {
+      document.documentElement.classList.remove("has-scope-cursor");
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerover", onOver);
     };
   }, []);
 
   return (
-    <>
-      <div className="cursor-ring" ref={ringRef} aria-hidden="true" />
-      <div className="cursor-dot" ref={dotRef} aria-hidden="true" />
-    </>
+    <div className="scope-cursor" ref={rootRef} aria-hidden="true">
+      <span className="scope-cursor__h" />
+      <span className="scope-cursor__v" />
+      <span className="scope-cursor__lock">
+        <span />
+        <span />
+        <span />
+        <span />
+      </span>
+    </div>
   );
 }

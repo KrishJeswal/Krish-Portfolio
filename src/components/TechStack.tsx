@@ -1,9 +1,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap, prefersReducedMotion } from "../lib/gsap";
+import { gsap, prefersReducedMotion, NOISE_CHARS } from "../lib/gsap";
 import { stack } from "../data/content";
-
-const PILL_CHARS = "<>{}#$%&01";
 
 export default function TechStack() {
   const rootRef = useRef<HTMLElement>(null);
@@ -11,18 +9,14 @@ export default function TechStack() {
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      gsap.fromTo(
-        ".stack__card",
-        { y: 70, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: { trigger: ".stack__grid", start: "top 82%" },
-        }
-      );
+      gsap.from(".stack__row", {
+        y: 28,
+        opacity: 0,
+        duration: 0.7,
+        stagger: 0.07,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ".stack", start: "top 86%", once: true },
+      });
     },
     { scope: rootRef }
   );
@@ -32,48 +26,34 @@ export default function TechStack() {
     const el = e.currentTarget;
     el.style.minWidth = `${el.offsetWidth}px`;
     gsap.to(el, {
-      duration: 0.6,
-      scrambleText: { text: el.dataset.text!, chars: PILL_CHARS, speed: 0.8 },
+      duration: 0.5,
+      scrambleText: { text: el.dataset.text!, chars: NOISE_CHARS, speed: 0.9 },
       overwrite: true,
     });
   };
 
-  const spotlight = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = e.currentTarget;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
-    el.style.setProperty("--my", `${e.clientY - r.top}px`);
-  };
-
   return (
-    <section className="section" id="stack" ref={rootRef}>
-      <div className="section-head">
-        <h2>Tech Stack</h2>
-        <span className="index">003 / TOOLKIT</span>
+    <section className="sec" id="stack" ref={rootRef}>
+      <div className="sec__head">
+        <span className="sec__chan">Toolkit</span>
+        <h2 className="sec__title">The instrument</h2>
+        <span className="sec__meta">003</span>
       </div>
-      <div className="stack__grid">
-        {stack.map((row, i) => (
-          <div className="stack__card" key={row.category} onMouseMove={spotlight} data-cursor>
-            <div className="stack__card-head">
-              <h3>{row.category}</h3>
-              <span>/0{i + 1}</span>
-            </div>
+
+      <div className="stack">
+        {stack.map((row) => (
+          <div className="stack__row" key={row.category}>
+            <span className="stack__cat">{row.category}</span>
             <ul className="stack__items">
               {row.items.map((item) => (
                 <li key={item}>
-                  <span
-                    className="stack__pill"
-                    data-text={item}
-                    onMouseEnter={scramble}
-                  >
+                  <span className="stack__pill" data-text={item} onMouseEnter={scramble}>
                     {item}
                   </span>
                 </li>
               ))}
             </ul>
-            <span className="stack__num" aria-hidden="true">
-              0{i + 1}
-            </span>
+            <span className="stack__idx tnum">{String(row.items.length).padStart(2, "0")} modules</span>
           </div>
         ))}
       </div>

@@ -8,28 +8,27 @@ export default function Timeline() {
 
   useGSAP(
     () => {
-      if (prefersReducedMotion()) return;
+      if (prefersReducedMotion()) {
+        gsap.utils.toArray<HTMLElement>(".log__item").forEach((i) => i.classList.add("is-lit"));
+        return;
+      }
 
-      gsap.to(".timeline__spine-fill", {
+      gsap.to(".log__spine span", {
         scaleY: 1,
         ease: "none",
-        scrollTrigger: {
-          trigger: ".timeline__wrap",
-          start: "top 70%",
-          end: "bottom 55%",
-          scrub: 0.5,
-        },
+        scrollTrigger: { trigger: ".log", start: "top 68%", end: "bottom 55%", scrub: 0.5 },
       });
 
-      gsap.utils.toArray<HTMLElement>(".timeline__item").forEach((item) => {
+      gsap.utils.toArray<HTMLElement>(".log__item").forEach((item) => {
         gsap.from(item, {
-          x: 60,
+          x: 40,
           opacity: 0,
-          duration: 1,
+          duration: 0.9,
           ease: "power3.out",
           scrollTrigger: {
             trigger: item,
-            start: "top 82%",
+            start: "top 86%",
+            once: true,
             onEnter: () => item.classList.add("is-lit"),
           },
         });
@@ -39,23 +38,25 @@ export default function Timeline() {
   );
 
   return (
-    <section className="section" id="timeline" ref={rootRef}>
-      <div className="section-head">
-        <h2>Timeline</h2>
-        <span className="index">004 / LOG</span>
+    <section className="sec" id="log" ref={rootRef}>
+      <div className="sec__head">
+        <span className="sec__chan">Chronology</span>
+        <h2 className="sec__title">Log</h2>
+        <span className="sec__meta">004</span>
       </div>
-      <div className="timeline__wrap">
-        <div className="timeline__spine">
-          <div className="timeline__spine-fill" />
+
+      <div className="log">
+        <div className="log__spine">
+          <span />
         </div>
         {timeline.map((t) => (
-          <div className="timeline__item" key={t.period + t.title}>
-            <span className="timeline__period">{t.period}</span>
-            <div className="timeline__body">
-              <h3>{t.title}</h3>
-              <h4>{t.org}</h4>
-              <p>{t.body}</p>
-              <span className="timeline__tag">{t.tag}</span>
+          <div className="log__item" key={t.period + t.title}>
+            <span className="log__period">{t.period}</span>
+            <div>
+              <h3 className="log__title">{t.title}</h3>
+              <p className="log__org">{t.org}</p>
+              <p className="log__body">{t.body}</p>
+              <span className="log__tag">{t.tag}</span>
             </div>
           </div>
         ))}

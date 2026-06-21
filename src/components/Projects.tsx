@@ -3,101 +3,130 @@ import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion } from "../lib/gsap";
 import { projects, profile, type Project } from "../data/content";
 
-function Motif({ kind }: { kind: Project["motif"] }) {
+/* Each figure is a minimal diagram of the project's actual method. Hover
+   animations are CSS-driven off `.capture:hover` (lines draw, accents pulse). */
+
+function LeakFigure() {
+  // SHAP leakage localization — flat importance with one sharp peak (the leak)
+  const bars = Array.from({ length: 26 }, (_, i) => {
+    const peak = Math.exp(-Math.pow((i - 17) / 1.5, 2));
+    const base = 0.1 + 0.09 * Math.abs(Math.sin(i * 1.27));
+    return Math.min(1, base + peak);
+  });
+  return (
+    <svg className="fig" viewBox="0 0 180 56" role="img" aria-label="Leakage localized at one sample">
+      {bars.map((hNorm, i) => {
+        const h = hNorm * 42;
+        const isPeak = i === 17;
+        return (
+          <rect
+            key={i}
+            className={isPeak ? "fig-peak" : "fig-bar"}
+            x={6 + i * 6.5}
+            y={52 - h}
+            width={3.4}
+            height={h}
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+function RetrieveFigure() {
+  // vector k-NN — a query point retrieving its nearest neighbours
+  const dots: [number, number][] = [
+    [26, 14], [52, 40], [70, 18], [120, 12], [150, 36],
+    [40, 30], [164, 18], [104, 44], [134, 28], [88, 8], [60, 52],
+  ];
+  const query: [number, number] = [96, 28];
+  const near = [[70, 18], [120, 12], [104, 44], [134, 28]] as [number, number][];
+  return (
+    <svg className="fig" viewBox="0 0 180 56" role="img" aria-label="Nearest-neighbour retrieval">
+      {near.map(([x, y], i) => (
+        <line key={i} className="fig-link" x1={query[0]} y1={query[1]} x2={x} y2={y} pathLength={1} style={{ transitionDelay: `${i * 0.06}s` }} />
+      ))}
+      {dots.map(([x, y], i) => (
+        <circle key={i} className="fig-dot" cx={x} cy={y} r={1.8} />
+      ))}
+      <circle className="fig-query" cx={query[0]} cy={query[1]} r={3.2} />
+    </svg>
+  );
+}
+
+function MapFigure() {
+  // column → schema mapping — matched rows connect, one stays unmatched
+  const ys = [8, 20, 32, 44];
+  const links = [
+    [0, 0], [1, 2], [2, 1], [3, 3],
+  ];
+  return (
+    <svg className="fig" viewBox="0 0 180 56" role="img" aria-label="Column to schema mapping">
+      {links.map(([l, r], i) => (
+        <line key={i} className="fig-link" x1={42} y1={ys[l] + 4} x2={138} y2={ys[r] + 4} pathLength={1} style={{ transitionDelay: `${i * 0.06}s` }} />
+      ))}
+      {ys.map((y, i) => (
+        <rect key={`l${i}`} className="fig-node" x={30} y={y} width={12} height={8} />
+      ))}
+      {ys.map((y, i) => (
+        <rect key={`r${i}`} className={i === 1 ? "fig-node fig-node--off" : "fig-node"} x={138} y={y} width={12} height={8} />
+      ))}
+    </svg>
+  );
+}
+
+function PipelineFigure() {
+  // CI/CD stages — design → CI → build → prod, shipped
+  const nodes = [22, 68, 114, 160];
+  return (
+    <svg className="fig" viewBox="0 0 180 56" role="img" aria-label="CI/CD pipeline, shipped">
+      <line className="fig-rail" x1={22} y1={28} x2={160} y2={28} />
+      {nodes.map((x, i) => (
+        <circle key={i} className="fig-stage" cx={x} cy={28} r={4} style={{ transitionDelay: `${i * 0.08}s` }} />
+      ))}
+    </svg>
+  );
+}
+
+function Figure({ kind }: { kind: Project["figure"] }) {
   switch (kind) {
-    case "trace":
-      return (
-        <svg className="bento__motif" viewBox="0 0 300 160" fill="none">
-          <path
-            d="M0 80 L30 80 L38 30 L46 130 L54 50 L62 110 L70 80 L110 80 L118 20 L126 140 L134 40 L142 100 L150 80 L200 80 L208 60 L216 95 L224 80 L300 80"
-            stroke="currentColor"
-            strokeWidth="2"
-          />
-          <path d="M0 120 L300 120 M0 40 L300 40" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 6" />
-        </svg>
-      );
-    case "noir":
-      return (
-        <svg className="bento__motif" viewBox="0 0 300 160" fill="none">
-          {[260, 220, 180, 140, 100, 60].map((w, i) => (
-            <rect key={w} x={(300 - w) / 2} y={i * 26} width={w} height="10" fill="currentColor" opacity={0.5 + i * 0.08} rx="2" />
-          ))}
-        </svg>
-      );
-    case "grid":
-      return (
-        <svg className="bento__motif" viewBox="0 0 300 160" fill="none">
-          {Array.from({ length: 5 }).map((_, r) =>
-            Array.from({ length: 7 }).map((_, c) => (
-              <rect key={`${r}-${c}`} x={c * 42} y={r * 32} width="38" height="28" stroke="currentColor" strokeWidth="1" fill={(r + c) % 3 === 0 ? "currentColor" : "none"} fillOpacity="0.25" />
-            ))
-          )}
-        </svg>
-      );
-    case "net":
-      return (
-        <svg className="bento__motif" viewBox="0 0 300 160" fill="none">
-          <path
-            d="M150 22 L42 80 L150 138 L258 80 Z M150 22 L150 138 M42 80 L258 80"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-          {[[150, 22], [42, 80], [258, 80], [150, 138], [150, 80]].map(([x, y]) => (
-            <circle key={`${x}-${y}`} cx={x} cy={y} r="7" fill="currentColor" />
-          ))}
-        </svg>
-      );
+    case "leak":
+      return <LeakFigure />;
+    case "retrieve":
+      return <RetrieveFigure />;
+    case "map":
+      return <MapFigure />;
+    case "pipeline":
+      return <PipelineFigure />;
   }
 }
 
-function Card({ p }: { p: Project }) {
-  const ref = useRef<HTMLElement>(null);
-
-  const onMove = (e: React.MouseEvent) => {
-    const el = ref.current!;
-    const r = el.getBoundingClientRect();
-    const x = e.clientX - r.left;
-    const y = e.clientY - r.top;
-    el.style.setProperty("--mx", `${x}px`);
-    el.style.setProperty("--my", `${y}px`);
-    if (!prefersReducedMotion()) {
-      const rx = ((y / r.height) - 0.5) * -4;
-      const ry = ((x / r.width) - 0.5) * 4;
-      gsap.to(el, { rotateX: rx, rotateY: ry, transformPerspective: 900, duration: 0.5, ease: "power2.out" });
-    }
-  };
-
-  const onLeave = () => {
-    gsap.to(ref.current, { rotateX: 0, rotateY: 0, duration: 0.7, ease: "elastic.out(1, 0.6)" });
-  };
-
+function Capture({ p }: { p: Project }) {
   return (
-    <article
-      className={`bento__card bento__card--${p.size}`}
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      data-cursor
-    >
-      <div className="bento__top">
-        <span className="bento__index">/{p.index}</span>
-        <span className="bento__arrow" aria-hidden="true">↗</span>
+    <article className={`capture ${p.featured ? "capture--featured" : ""}`} data-cursor>
+      <div className="capture__head">
+        <span className="capture__cap">{p.capture}</span>
+        <span className="capture__domain">{p.domain}</span>
       </div>
-      <div>
-        <h3 className="bento__title">{p.title}</h3>
-        <p className="bento__subtitle">{p.subtitle}</p>
+      <h3 className="capture__title">{p.title}</h3>
+      <p className="capture__sub">{p.subtitle}</p>
+      <p className="capture__desc">{p.description}</p>
+
+      <div className="capture__fig">
+        <Figure kind={p.figure} />
       </div>
-      <p className="bento__desc">{p.description}</p>
-      <div className="bento__metric">
-        <strong>{p.metric}</strong>
-        <span>{p.metricLabel}</span>
+
+      <div className="capture__foot">
+        <div className="capture__metric">
+          <b>{p.metric}</b>
+          <span>{p.metricLabel}</span>
+        </div>
+        <ul className="capture__tags">
+          {p.tags.map((t) => (
+            <li key={t}>{t}</li>
+          ))}
+        </ul>
       </div>
-      <ul className="bento__tags">
-        {p.tags.map((t) => (
-          <li key={t}>{t}</li>
-        ))}
-      </ul>
-      <Motif kind={p.motif} />
     </article>
   );
 }
@@ -108,32 +137,35 @@ export default function Projects() {
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      gsap.from(".bento__card", {
-        y: 90,
+      gsap.from(".capture", {
+        y: 60,
         opacity: 0,
-        duration: 1.1,
-        stagger: 0.12,
+        duration: 0.9,
+        stagger: 0.1,
         ease: "power3.out",
-        scrollTrigger: { trigger: ".bento", start: "top 82%" },
+        scrollTrigger: { trigger: ".work", start: "top 85%", once: true },
       });
     },
     { scope: rootRef }
   );
 
   return (
-    <section className="section" id="projects" ref={rootRef}>
-      <div className="section-head">
-        <h2>Selected Work</h2>
-        <span className="index">002 / TRACES</span>
+    <section className="sec" id="work" ref={rootRef}>
+      <div className="sec__head">
+        <span className="sec__chan">CH·01–04 / Captures</span>
+        <h2 className="sec__title">Selected work</h2>
+        <span className="sec__meta">002</span>
       </div>
-      <div className="bento">
+
+      <div className="work">
         {projects.map((p) => (
-          <Card key={p.title} p={p} />
+          <Capture key={p.title} p={p} />
         ))}
       </div>
-      <a className="projects__github" href={profile.github} target="_blank" rel="noreferrer">
+
+      <a className="work__more" href={profile.github} target="_blank" rel="noreferrer" data-cursor>
         <span>Full archive — github.com/KrishJeswal</span>
-        <span>↗</span>
+        <span aria-hidden="true">↗</span>
       </a>
     </section>
   );
