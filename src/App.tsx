@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { ScrollSmoother, ScrollTrigger, prefersReducedMotion } from "./lib/gsap";
 import Cursor from "./components/Cursor";
@@ -14,7 +14,6 @@ import Footer from "./components/Footer";
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     if (prefersReducedMotion()) return;
@@ -52,7 +51,7 @@ export default function App() {
       <Cursor />
       <Preloader onComplete={() => setLoaded(true)} />
       <Navbar visible={loaded} />
-      <div id="smooth-wrapper" ref={wrapperRef}>
+      <div id="smooth-wrapper">
         <div id="smooth-content">
           <main>
             <Hero play={loaded} />

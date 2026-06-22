@@ -10,8 +10,6 @@ export const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// The alphabet content decrypts out of — reads like signal noise / a hex dump
-// resolving, which is the whole conceit of the site.
 export const NOISE_CHARS = "01░▒▓<>/\\|-_=+#$%&*▮▯╌╍AESKJ";
 
 export { gsap, ScrollTrigger, ScrollSmoother, SplitText };

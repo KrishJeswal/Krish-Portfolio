@@ -9,14 +9,10 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/krishjeswal/",
   location: "Bengaluru, India",
   coords: "12.97°N 77.59°E",
-  // ML-first positioning. Every fact below is real; only the framing is tuned.
   summary:
     "I pull signal out of noise. My research recovers a secret AES key from the faint power a chip leaks — an ML side-channel attack submitted to IEEE — and the same instinct runs the production systems I ship: RAG pipelines on GCP, ML services that survive contact with real data. Underneath it all sits the electronics I trained on: FPGAs, embedded silicon, the physical layer.",
 };
 
-// The three layers, in the order Krish works in them: research first,
-// systems second, silicon third. This is a real ranked hierarchy, so the
-// numbers carry meaning rather than decorate.
 export type Layer = { id: string; channel: string; title: string; body: string };
 
 export const layers: Layer[] = [
@@ -54,7 +50,6 @@ export type Project = {
   // leak = SHAP leakage localization, retrieve = vector k-NN,
   // map = column→schema mapping, pipeline = CI/CD stages
   figure: "leak" | "retrieve" | "map" | "pipeline";
-  link?: string;
 };
 
 export const projects: Project[] = [
@@ -112,8 +107,6 @@ export const projects: Project[] = [
   },
 ];
 
-// Stack ordered ML-first, mirroring the layer hierarchy. Electronics last —
-// the substrate, not the headline.
 export const stack: { category: string; items: string[] }[] = [
   {
     category: "AI / ML",

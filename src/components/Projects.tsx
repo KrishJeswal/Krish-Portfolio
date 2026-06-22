@@ -3,8 +3,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion } from "../lib/gsap";
 import { projects, profile, type Project } from "../data/content";
 
-/* Each figure is a minimal diagram of the project's actual method. Hover
-   animations are CSS-driven off `.capture:hover` (lines draw, accents pulse). */
+/* Hover animations are CSS-driven off `.capture:hover` (lines draw, accents pulse). */
 
 function LeakFigure() {
   // SHAP leakage localization — flat importance with one sharp peak (the leak)

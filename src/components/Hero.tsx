@@ -48,7 +48,6 @@ export default function Hero({ play }: { play: boolean }) {
           },
         });
         tl.to(".hero__eyebrow", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" })
-          // name cascades in character by character, line 1 then line 2
           .to(
             chars1,
             { yPercent: 0, opacity: 1, duration: 0.95, stagger: 0.042, ease: "power4.out" },
@@ -59,7 +58,6 @@ export default function Hero({ play }: { play: boolean }) {
             { yPercent: 0, opacity: 1, duration: 1, stagger: 0.038, ease: "power4.out" },
             0.34
           )
-          // a breath of overshoot settle on the whole name
           .fromTo(
             ".hero__title",
             { scale: 1.025, transformOrigin: "left bottom" },

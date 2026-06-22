@@ -2,9 +2,6 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion } from "../lib/gsap";
 
-/* A scope probe: crosshair + live coordinate readout that "locks" with corner
-   brackets over interactive targets. Functional instrument language, not a
-   decorative dot-and-ring. */
 export default function Cursor() {
   const rootRef = useRef<HTMLDivElement>(null);
 
