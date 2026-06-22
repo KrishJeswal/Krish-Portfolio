@@ -31,7 +31,7 @@ export const layers: Layer[] = [
   {
     id: "03",
     channel: "SILICON",
-    title: "Electronics and Telecom Undergrad",
+    title: "Electronics & Telecom Undergrad",
     body: "FPGAs, STM32, Verilog and UART — the physical layer the rest of the stack quietly stands on.",
   },
 ];
