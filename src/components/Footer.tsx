@@ -28,7 +28,7 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer__giant" data-cursor onClick={toTop} title="Back to top">
-        Krish Jeswal
+        Krish<br />Jeswal
       </div>
       <div className="footer__row">
         <p className="tnum">local time {time} IST</p>
