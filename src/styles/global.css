@@ -1354,7 +1354,7 @@ main {
   gap: 1.4rem;
   list-style: none;
 }
-@media (max-width: 720px) {
+@media (max-width: 1024px) {
   .footer__giant {
     white-space: normal;
   }
