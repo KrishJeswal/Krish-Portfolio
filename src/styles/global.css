@@ -1354,6 +1354,12 @@ main {
   gap: 1.4rem;
   list-style: none;
 }
+@media (max-width: 720px) {
+  .footer__giant {
+    white-space: normal;
+    word-break: break-word;
+  }
+}
 
 /* ============================================================
    REDUCED MOTION
