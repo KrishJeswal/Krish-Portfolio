@@ -72,7 +72,7 @@ export default function Contact() {
           </p>
           <ul className="channels">
             <li>
-              <a href={`mailto:${profile.email}`} data-cursor>
+              <a href={`mailto:${profile.email}`} target="_blank" rel="noreferrer" data-cursor>
                 <span>email</span>
                 {profile.email}
               </a>

@@ -23,20 +23,20 @@ export const layers: Layer[] = [
   {
     id: "01",
     channel: "INFERENCE",
-    title: "Machine-learning researcher",
-    body: "Side-channel attacks, model interpretability, and ML that holds up under scrutiny. Targeting IEEE for masked-AES leakage work.",
+    title: "Machine Learning Researcher",
+    body: "PyTorch, scikit-learn, SHAP and RAG — models that learn the hard patterns, and the tooling to prove they actually hold up.",
   },
   {
     id: "02",
     channel: "SYSTEMS",
-    title: "Full-stack engineer",
-    body: "RAG pipelines, typed APIs, and cloud deployments shipped end to end — from architecture to production on GCP.",
+    title: "Full-stack Developer",
+    body: "React, TypeScript, FastAPI and GCP — the surface users touch and the services behind it, shipped end to end into production.",
   },
   {
     id: "03",
     channel: "SILICON",
-    title: "Electronics & telecom",
-    body: "FPGAs, STM32, UART and CAN — the physical layer the rest of the stack quietly stands on.",
+    title: "Electronics and Telecom Undergrad",
+    body: "FPGAs, STM32, Verilog and UART — the physical layer the rest of the stack quietly stands on.",
   },
 ];
 
@@ -182,7 +182,7 @@ export const timeline: TimelineEntry[] = [
 
 export const navLinks = [
   { label: "Thesis", href: "#thesis" },
-  { label: "Work", href: "#work" },
+  { label: "Captures", href: "#captures" },
   { label: "Stack", href: "#stack" },
   { label: "Log", href: "#log" },
   { label: "Contact", href: "#contact" },

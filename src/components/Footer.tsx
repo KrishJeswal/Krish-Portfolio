@@ -45,7 +45,9 @@ export default function Footer() {
             </a>
           </li>
           <li>
-            <a href={`mailto:${profile.email}`}>Mail</a>
+            <a href={`mailto:${profile.email}`} target="_blank" rel="noreferrer">
+              Mail
+            </a>
           </li>
         </ul>
       </div>

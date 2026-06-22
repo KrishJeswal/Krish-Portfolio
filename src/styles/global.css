@@ -35,8 +35,6 @@
   /* semantic z-index scale */
   --z-field: 0;
   --z-content: 1;
-  --z-bezel: 80;
-  --z-hud: 90;
   --z-nav: 100;
   --z-menu: 120;
   --z-preload: 400;
@@ -168,22 +166,6 @@ canvas {
   width: 1px;
 }
 
-.scope-cursor__read {
-  position: absolute;
-  left: 16px;
-  top: 9px;
-  font-family: var(--font-mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.1em;
-  color: var(--ink-mid);
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.scope-cursor.is-hot .scope-cursor__read {
-  opacity: 1;
-}
 .scope-cursor.is-hot .scope-cursor__h,
 .scope-cursor.is-hot .scope-cursor__v {
   background: var(--signal);
@@ -243,11 +225,6 @@ canvas {
     cursor: none !important;
   }
 }
-
-/* ============================================================
-   HUD — top + bottom instrument readouts
-   ============================================================ */
-
 
 /* ============================================================
    PRELOADER — power-on sequence
@@ -621,18 +598,6 @@ main {
 .hero__role b {
   color: var(--ink);
   font-weight: 500;
-}
-
-.hero__now {
-  margin-top: 0.9rem;
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.04em;
-  color: var(--ink-dim);
-}
-.hero__now b {
-  color: var(--signal);
-  font-weight: 400;
 }
 
 .hero__scroll {

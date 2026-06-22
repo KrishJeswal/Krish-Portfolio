@@ -35,7 +35,7 @@ export default function TechStack() {
   return (
     <section className="sec" id="stack" ref={rootRef}>
       <div className="sec__head">
-        <span className="sec__chan">Toolkit</span>
+        <span className="sec__chan">Stack</span>
         <h2 className="sec__title">The instrument</h2>
         <span className="sec__meta">003</span>
       </div>

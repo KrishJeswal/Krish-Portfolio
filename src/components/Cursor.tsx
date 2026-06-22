@@ -25,7 +25,9 @@ export default function Cursor() {
 
     const onOver = (e: PointerEvent) => {
       const t = e.target as HTMLElement;
-      const hot = !!t.closest("a, button, input, textarea, [data-cursor]");
+      // The sphere field and the stack matrix get the same locked reticle as
+      // interactive targets — brightened crosshair with corner brackets.
+      const hot = !!t.closest("a, button, input, textarea, [data-cursor], .hero, #stack");
       root.classList.toggle("is-hot", hot);
     };
 

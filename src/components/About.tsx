@@ -57,7 +57,7 @@ export default function About() {
   return (
     <section className="sec" id="thesis" ref={rootRef}>
       <div className="sec__head">
-        <span className="sec__chan">CH·00 / Thesis</span>
+        <span className="sec__chan">Thesis</span>
         <h2 className="sec__title">Signal from noise</h2>
         <span className="sec__meta">001</span>
       </div>

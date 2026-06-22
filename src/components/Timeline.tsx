@@ -40,8 +40,8 @@ export default function Timeline() {
   return (
     <section className="sec" id="log" ref={rootRef}>
       <div className="sec__head">
-        <span className="sec__chan">Chronology</span>
-        <h2 className="sec__title">Log</h2>
+        <span className="sec__chan">Log</span>
+        <h2 className="sec__title">Chronology</h2>
         <span className="sec__meta">004</span>
       </div>
 

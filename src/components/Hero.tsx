@@ -38,7 +38,15 @@ export default function Hero({ play }: { play: boolean }) {
         gsap.set(".hero__title", { autoAlpha: 1 });
         gsap.set([...chars1, ...chars2], { yPercent: 125, opacity: 0 });
 
-        const tl = gsap.timeline();
+        // Once the cascade settles, revert the split so the name returns to
+        // plain text — otherwise the per-char inline-block spans leave a ragged
+        // gap when the title is selected/copied.
+        const tl = gsap.timeline({
+          onComplete: () => {
+            splits.forEach((s) => s.revert());
+            splits = [];
+          },
+        });
         tl.to(".hero__eyebrow", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" })
           // name cascades in character by character, line 1 then line 2
           .to(
@@ -80,7 +88,7 @@ export default function Hero({ play }: { play: boolean }) {
       <div className="hero__inner hero__top">
         <div className="hero__eyebrow">
           <span className="dot" />
-          <span className="eyebrow">Portfolio — 2026 · Bengaluru</span>
+          <span className="eyebrow">Available for research &amp; internships — 2026</span>
         </div>
         <h1 className="hero__title" aria-label="Krish Jeswal">
           <span className="ln">
@@ -97,11 +105,8 @@ export default function Hero({ play }: { play: boolean }) {
       <div className="hero__inner hero__foot">
         <div>
           <p className="hero__role">
-            <b>ML researcher</b> recovering signal from noise — side-channel attacks on masked AES,
-            submitted to IEEE. <b>Full-stack engineer</b> shipping RAG on GCP.
-          </p>
-          <p className="hero__now">
-            <b>Now</b> — masked-AES leakage · RAG on Cloud Run
+            <b>ML Researcher &amp; Full-Stack Engineer</b> — Electronics &amp; Telecom @ RVCE,
+            Bengaluru
           </p>
         </div>
         <span className="hero__scroll">

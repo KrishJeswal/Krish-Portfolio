@@ -150,10 +150,10 @@ export default function Projects() {
   );
 
   return (
-    <section className="sec" id="work" ref={rootRef}>
+    <section className="sec" id="captures" ref={rootRef}>
       <div className="sec__head">
-        <span className="sec__chan">CH·01–04 / Captures</span>
-        <h2 className="sec__title">Selected work</h2>
+        <span className="sec__chan">Captures</span>
+        <h2 className="sec__title">Recovered work</h2>
         <span className="sec__meta">002</span>
       </div>
 
