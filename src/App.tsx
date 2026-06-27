@@ -48,6 +48,9 @@ export default function App() {
 
   return (
     <>
+      <a className="skip-link" href="#top">
+        Skip to content
+      </a>
       <Cursor />
       <Preloader onComplete={() => setLoaded(true)} />
       <Navbar visible={loaded} />

@@ -7,6 +7,7 @@ export default function Navbar({ visible }: { visible: boolean }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
+  const burgerRef = useRef<HTMLButtonElement>(null);
 
   const go = (href: string) => {
     setOpen(false);
@@ -38,6 +39,49 @@ export default function Navbar({ visible }: { visible: boolean }) {
     sections.forEach((s) => obs.observe(s));
     return () => obs.disconnect();
   }, []);
+
+  // When the menu is open: lock background scroll, trap focus inside it, and
+  // close on Escape. Focus moves to the first link on open and returns to the
+  // burger on close.
+  useEffect(() => {
+    if (!open) return;
+    const menu = menuRef.current;
+    if (!menu) return;
+
+    const smoother = ScrollSmoother.get();
+    smoother?.paused(true);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const links = Array.from(menu.querySelectorAll<HTMLAnchorElement>("a"));
+    links[0]?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key === "Tab" && links.length) {
+        const first = links[0];
+        const last = links[links.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", onKey);
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      smoother?.paused(false);
+      document.body.style.overflow = prevOverflow;
+      burgerRef.current?.focus();
+    };
+  }, [open]);
 
   useGSAP(() => {
     const menu = menuRef.current!;
@@ -95,17 +139,19 @@ export default function Navbar({ visible }: { visible: boolean }) {
           Resume ↗
         </a>
         <button
+          ref={burgerRef}
           className={`nav__burger ${open ? "is-open" : ""}`}
           onClick={() => setOpen((o) => !o)}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
+          aria-controls="primary-menu"
         >
           <span />
           <span />
           <span />
         </button>
       </nav>
-      <div className="menu" ref={menuRef}>
+      <div className="menu" id="primary-menu" ref={menuRef}>
         {navLinks.map((l, i) => (
           <a
             key={l.href}

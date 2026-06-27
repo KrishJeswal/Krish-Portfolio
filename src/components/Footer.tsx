@@ -27,9 +27,9 @@ export default function Footer() {
 
   return (
     <footer className="footer">
-      <div className="footer__giant" data-cursor onClick={toTop} title="Back to top">
+      <button className="footer__giant" data-cursor onClick={toTop} aria-label="Back to top">
         Krish Jeswal
-      </div>
+      </button>
       <div className="footer__row">
         <p className="tnum">local time {time} IST</p>
         <p>© {new Date().getFullYear()} Krish Jeswal — Bengaluru, IN</p>

@@ -101,11 +101,11 @@ export default function Contact() {
         <form onSubmit={onSubmit}>
           <div className="field-row">
             <label htmlFor="cf-name">Name</label>
-            <input id="cf-name" type="text" name="name" required autoComplete="name" placeholder="Who's transmitting?" />
+            <input id="cf-name" type="text" name="name" required autoComplete="name" placeholder="Who’s transmitting?" />
           </div>
           <div className="field-row">
             <label htmlFor="cf-email">Email</label>
-            <input id="cf-email" type="email" name="email" required autoComplete="email" placeholder="you@domain.com" />
+            <input id="cf-email" type="email" name="email" required autoComplete="email" spellCheck={false} placeholder="you@domain.com" />
           </div>
           <div className="field-row">
             <label htmlFor="cf-msg">Message</label>
