@@ -6,28 +6,16 @@ import { projects, profile, type Project } from "../data/content";
 /* Hover animations are CSS-driven off `.capture:hover` (lines draw, accents pulse). */
 
 function LeakFigure() {
-  // SHAP leakage localization — flat importance with one sharp peak (the leak)
-  const bars = Array.from({ length: 26 }, (_, i) => {
-    const peak = Math.exp(-Math.pow((i - 17) / 1.5, 2));
-    const base = 0.1 + 0.09 * Math.abs(Math.sin(i * 1.27));
-    return Math.min(1, base + peak);
-  });
+  // Oscilloscope trace — a faint waveform at rest that re-acquires (a bright
+  // trace draws across it) on hover, with the peak sample lighting up.
+  const d =
+    "M8 40 L26 40 L30 32 L34 40 L52 40 L56 31 L60 40 L86 40 L92 12 L98 40 L120 40 L124 33 L128 40 L150 40 L154 35 L158 40 L172 40";
   return (
-    <svg className="fig" viewBox="0 0 180 56" role="img" aria-label="Leakage localized at one sample">
-      {bars.map((hNorm, i) => {
-        const h = hNorm * 42;
-        const isPeak = i === 17;
-        return (
-          <rect
-            key={i}
-            className={isPeak ? "fig-peak" : "fig-bar"}
-            x={6 + i * 6.5}
-            y={52 - h}
-            width={3.4}
-            height={h}
-          />
-        );
-      })}
+    <svg className="fig" viewBox="0 0 180 56" role="img" aria-label="Signal trace re-acquired on hover">
+      <line className="fig-rail" x1={8} y1={40} x2={172} y2={40} />
+      <path className="fig-rail" d={d} />
+      <path className="fig-link" d={d} pathLength={1} />
+      <circle className="fig-stage" cx={92} cy={12} r={3} />
     </svg>
   );
 }
@@ -75,14 +63,21 @@ function MapFigure() {
 }
 
 function PipelineFigure() {
-  // CI/CD stages — design → CI → build → prod, shipped
-  const nodes = [22, 68, 114, 160];
+  // Scope acquire — a static crosshair and outer range ring at rest; on hover
+  // the inner rings and a sweep draw in and lock onto a target blip. Radial
+  // read, distinct from the other figures; not literal.
   return (
-    <svg className="fig" viewBox="0 0 180 56" role="img" aria-label="CI/CD pipeline, shipped">
-      <line className="fig-rail" x1={22} y1={28} x2={160} y2={28} />
-      {nodes.map((x, i) => (
-        <circle key={i} className="fig-stage" cx={x} cy={28} r={4} style={{ transitionDelay: `${i * 0.08}s` }} />
-      ))}
+    <svg className="fig" viewBox="0 0 180 56" role="img" aria-label="Scope rings and sweep locking onto a target">
+      {/* static crosshair + outer ring */}
+      <line className="fig-rail" x1={10} y1={28} x2={170} y2={28} />
+      <line className="fig-rail" x1={90} y1={4} x2={90} y2={52} />
+      <circle className="fig-rail" cx={90} cy={28} r={24} />
+      {/* inner range rings draw in on hover */}
+      <circle className="fig-link" cx={90} cy={28} r={9} pathLength={1} />
+      <circle className="fig-link" cx={90} cy={28} r={17} pathLength={1} style={{ transitionDelay: "0.1s" }} />
+      {/* sweep to the locked target */}
+      <line className="fig-link" x1={90} y1={28} x2={105} y2={19} pathLength={1} style={{ transitionDelay: "0.22s" }} />
+      <circle className="fig-stage" cx={105} cy={19} r={3} style={{ transitionDelay: "0.32s" }} />
     </svg>
   );
 }

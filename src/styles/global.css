@@ -866,24 +866,6 @@ main {
   overflow: visible;
 }
 
-/* leak — SHAP bars with one peak */
-.fig-bar {
-  fill: var(--ink-faint);
-  transition: fill 0.4s;
-}
-.fig-peak {
-  fill: var(--ink-dim);
-  transform-origin: center bottom;
-  transition: fill 0.4s, transform 0.4s var(--ease-out);
-}
-.capture:hover .fig-bar {
-  fill: var(--ink-dim);
-}
-.capture:hover .fig-peak {
-  fill: var(--signal);
-  transform: scaleY(1.18);
-}
-
 /* retrieve — scatter + query + drawn neighbour links */
 .fig-dot {
   fill: var(--ink-dim);
@@ -926,6 +908,10 @@ main {
   stroke: var(--ink-faint);
   stroke-width: 1;
   fill: none;
+  transition: stroke 0.4s;
+}
+.capture:hover .fig-rail {
+  stroke: var(--ink-dim);
 }
 .fig-stage {
   fill: var(--ink-dim);
@@ -984,26 +970,26 @@ main {
   padding: 0.28rem 0.6rem;
 }
 
-/* 4-cell bento: wide/narrow alternate on a diagonal.
-   [ CipherTrace · 8 ][ Code Noir · 4 ]
-   [ Excel · 4 ][ IETE · 8           ]  */
+/* 4-cell bento: wide/narrow alternate on a diagonal, 55:45 on a 20-col grid.
+   [ CipherTrace · 11 ][ Code Noir · 9 ]
+   [ Excel · 9 ][ IETE · 11          ]  */
 @media (min-width: 900px) {
   .work {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
+    grid-template-columns: repeat(20, 1fr);
     grid-auto-rows: 1fr;
   }
   .capture:nth-child(1) {
-    grid-column: span 8;
+    grid-column: span 11;
   }
   .capture:nth-child(2) {
-    grid-column: span 4;
+    grid-column: span 9;
   }
   .capture:nth-child(3) {
-    grid-column: span 4;
+    grid-column: span 9;
   }
   .capture:nth-child(4) {
-    grid-column: span 8;
+    grid-column: span 11;
   }
   /* featured capture gets the larger headline */
   .capture--featured .capture__title {
