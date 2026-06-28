@@ -42,7 +42,7 @@ function RetrieveFigure() {
 }
 
 function MapFigure() {
-  // column → schema mapping — matched rows connect, one stays unmatched
+  // column → schema mapping — each row connects to its matched schema field
   const ys = [8, 20, 32, 44];
   const links = [
     [0, 0], [1, 2], [2, 1], [3, 3],
@@ -56,7 +56,7 @@ function MapFigure() {
         <rect key={`l${i}`} className="fig-node" x={30} y={y} width={12} height={8} />
       ))}
       {ys.map((y, i) => (
-        <rect key={`r${i}`} className={i === 1 ? "fig-node fig-node--off" : "fig-node"} x={138} y={y} width={12} height={8} />
+        <rect key={`r${i}`} className="fig-node" x={138} y={y} width={12} height={8} />
       ))}
     </svg>
   );
