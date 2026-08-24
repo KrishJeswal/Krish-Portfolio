@@ -4,7 +4,7 @@ A two-route personal site built from scratch — **no UI library, no CSS framewo
 
 **Live → [krish-jeswal.web.app](https://krish-jeswal.web.app)**
 
-```
+```text
 React 19 · TypeScript (strict) · Vite 6 · React Router 7 · hand-authored CSS · Firebase Hosting
 ```
 
@@ -32,7 +32,7 @@ Two routes, five prerendered pages.
 **`/` — the home page.** Six full-height panels, each `position: sticky` at `top: 0`, so scrolling slides every panel up over the one before it like stacked sheets. A fixed header carries a wordmark and a nav "roll" whose numeral rolls into an aperture as the active section changes.
 
 | # | Section | What it is |
-|---|---|---|
+| --- | --- | --- |
 | 01 | Hero | The name, dealt in two words, under a knockout cursor blob |
 | 02 | About | A 16:9 plate holding a horizontal tape of three discipline panels |
 | 03 | Work | A draggable card deck — fling or tap to advance |
@@ -47,7 +47,7 @@ Everything is static. There is no backend, no analytics, and no runtime network 
 ## Tech stack
 
 | Layer | Choice | Why |
-|---|---|---|
+| --- | --- | --- |
 | **UI runtime** | React 19 | Component model and lifecycle. State is deliberately small — `active`, `index`, `open`, `loaded`, `sheetOpen`. |
 | **Language** | TypeScript 5.8, `strict` | Plus `noUnusedLocals` and `noUnusedParameters`, so dead bindings fail the build. |
 | **Build** | Vite 6 | Client bundle, plus a second SSR build that feeds the prerenderer. |
@@ -92,7 +92,7 @@ Both pages track scroll position with a `requestAnimationFrame`-coalesced listen
 
 ## Project structure
 
-```
+```text
 src/
 ├── main.tsx                 hydrate-or-render branch, scrollRestoration, the `js` gate
 ├── entry-server.tsx         renderToString for the build-time prerender
@@ -123,7 +123,9 @@ src/
     ├── responsive.css       three breakpoints, all deliberate
     └── global.css           imports the above in order
 
-scripts/prerender.mjs        renders every route, writes sitemap.xml and robots.txt
+scripts/
+├── prerender.mjs            renders every route, writes sitemap.xml and robots.txt
+└── images.mjs               art/*.png -> public/assets/*.webp + *.jpg (og)
 ```
 
 ## Design system
@@ -141,7 +143,7 @@ All tokens live in `src/styles/tokens.css`.
 **Breakpoints** — three, each with a reason:
 
 | Width | What changes |
-|---|---|
+| --- | --- |
 | 1200px | The case-study rail becomes a bottom sheet |
 | 860px | The home panels stop being sticky and grow with their content |
 | 720px | The experience rows stack, all four together |
@@ -165,6 +167,12 @@ Pointer-driven, with the live gesture held in a ref rather than state — it cha
 ### Architecture diagrams
 
 The diagrams in the case studies are native markup, not images — nodes, links, rows and groups rendered from typed data. They stay legible at any width, reflow on phones, and are readable by a screen reader.
+
+### Images
+
+Screenshots ship as WebP — 3.79MB of source PNG encodes to 0.08MB, a 98% cut, because they are flat-colour UI captures. `npm run images` drives sharp over `art/` and emits two files per screenshot: the WebP the pages load, and a JPEG used *only* for `og:image`, since link unfurlers are the last audience that cannot be relied on for WebP. That is why `Project` carries both `image` and `ogImage`.
+
+Deck images are `loading="lazy"`, so the home page fetches none of them until the work section approaches.
 
 ### Content as data
 
@@ -191,22 +199,24 @@ The dev server serves an empty shell and client-renders — prerendered markup o
 ### Scripts
 
 | Script | What it does |
-|---|---|
+| --- | --- |
 | `npm run dev` | Vite dev server with HMR |
 | `npm run build` | Typecheck, client build, SSR build, then prerender all routes |
 | `npm run preview` | Serve `dist/` locally, including the prerendered HTML |
+| `npm run images` | Re-encode screenshots from `art/` to WebP + a JPEG og twin |
 
 To see what a crawler sees, run `npm run build` then `npm run preview` and view source.
 
 ## Editing content
 
 | To change | Edit |
-|---|---|
+| --- | --- |
 | Name, email, links, résumé | `profile` in `src/data/home.ts` |
 | Section names and numerals | `sections` in `src/data/home.ts` |
 | About panels, skills, experience | `reelPanels`, `drawers`, `ledger` in `src/data/home.ts` |
 | A case study | the matching const in `src/data/projects.ts` |
 | Adding a project | add to `PROJECT_SLUGS` and the `projects` array — routes, sitemap, deck and next-card all follow |
+| A screenshot | drop the PNG in `art/`, run `npm run images`, point `image` / `ogImage` at the output |
 | Colour, type, spacing | `src/styles/tokens.css` |
 
 ## Deployment
@@ -222,7 +232,7 @@ firebase deploy
 Cache policy is split by what can change in place:
 
 | Path | Policy |
-|---|---|
+| --- | --- |
 | `/`, `/work/**`, `**/*.html` | `max-age=0, must-revalidate` |
 | `**/*.js`, `**/*.css` | `max-age=31536000, immutable` (content-hashed) |
 | Images and PDFs | `max-age=86400` plus a 30-day `stale-while-revalidate` |

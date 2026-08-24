@@ -72,6 +72,8 @@ export type Project = {
   readonly domain: string;
   readonly year: string;
   readonly image: string;
+  /** JPEG twin of `image` — og:image, where WebP support is still not universal. */
+  readonly ogImage: string;
   readonly imageAlt: string;
   readonly repo: string;
   readonly sections: Readonly<Record<WrittenSectionId, readonly Block[]>>;
@@ -87,7 +89,8 @@ const ciphertrace: Project = {
   subtitle: "ML Side-Channel Cryptanalysis",
   domain: "ML research",
   year: "2025",
-  image: "/assets/ciphertrace.png",
+  image: "/assets/ciphertrace.webp",
+  ogImage: "/assets/ciphertrace.jpg",
   imageAlt: "CipherTrace attack dashboard",
   repo: "https://github.com/KrishJeswal/CipherTrace",
   sections: {
@@ -311,7 +314,8 @@ const lorerecall: Project = {
   subtitle: "Agentic Second Brain",
   domain: "ML · RAG",
   year: "2025",
-  image: "/assets/lorerecall.png",
+  image: "/assets/lorerecall.webp",
+  ogImage: "/assets/lorerecall.jpg",
   imageAlt: "LoreRecall pipeline interface",
   repo: "https://github.com/KrishJeswal/LoreRecall",
   sections: {
@@ -504,7 +508,8 @@ const glyphmark: Project = {
   subtitle: "Multi-Surface MCP Toolchain",
   domain: "Systems · TypeScript",
   year: "2025",
-  image: "/assets/glyphmark.png",
+  image: "/assets/glyphmark.webp",
+  ogImage: "/assets/glyphmark.jpg",
   imageAlt: "GlyphMark toolchain",
   repo: "https://github.com/KrishJeswal/GlyphMark",
   sections: {
@@ -699,7 +704,8 @@ const pathfindr: Project = {
   subtitle: "Graph-Based Indoor Navigation",
   domain: "Product · React",
   year: "2025",
-  image: "/assets/pathfindr.png",
+  image: "/assets/pathfindr.webp",
+  ogImage: "/assets/pathfindr.jpg",
   imageAlt: "Pathfindr interface",
   repo: "https://github.com/KrishJeswal/Pathfindr",
   sections: {

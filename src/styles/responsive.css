@@ -1,8 +1,9 @@
 /* ============================================================
-   RESPONSIVE — three breakpoints, all of them deliberate
+   RESPONSIVE — four breakpoints, all of them deliberate
    1200px  case-study rail → bottom sheet
     860px  home unsticks, skill grid 4→2, about drops its ratio
     720px  experience rows stack, all four at once
+    560px  phone proportions: vh padding and chrome sized for a phone
    ============================================================ */
 
 /* ---------- 1200px: rail becomes a bottom sheet ---------- */
@@ -128,5 +129,68 @@
 
   .next-card {
     gap: 14px;
+  }
+}
+
+/* ---------- 560px: phone proportions ---------- */
+
+/*
+  Below this the page was still a scaled-down tablet. Two things go wrong at
+  phone width: vh-driven padding eats a third of a tall screen before any
+  content lands, and several pieces of chrome are sized for a row that only
+  fits on a wider viewport. Nothing here changes the layout's structure —
+  it is all proportion.
+*/
+@media (max-width: 560px) {
+  /* longhands: the shorthand also reset padding-left/right, which overrode
+     .panel--flush and cost the deck its full-width stage */
+  .panel {
+    padding-top: clamp(72px, 11vh, 104px);
+    padding-bottom: clamp(28px, 5vh, 48px);
+  }
+
+  .site-header {
+    padding: 18px 20px;
+  }
+
+  .hero-roles {
+    gap: 10px;
+  }
+
+  .reel-slide {
+    padding: 22px 18px;
+  }
+
+  /*
+    A 28-character address cannot share a line with the copy button at this
+    width, and nowrap made it push the card wider than the viewport — which
+    is what was scaling the whole page down.
+  */
+  .email {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .email-chip {
+    gap: 8px;
+    padding: 10px 11px;
+  }
+
+  .contact-card {
+    padding: 20px 16px;
+  }
+
+  /*
+    The one place the deck deviates from the prototype, which has no phone
+    variant: at 72vw the card is mostly margin on a 390px screen.
+  */
+  .deck-card {
+    width: 88vw;
+  }
+
+  .loader-card {
+    width: min(84vw, 320px);
+    gap: 16px;
+    padding: 22px;
   }
 }

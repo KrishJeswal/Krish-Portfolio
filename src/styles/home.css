@@ -404,14 +404,29 @@
   background: rgba(237, 235, 231, 0.1);
 }
 
+/*
+  A deliberate deviation from the prototype, and the only one on this card.
+
+  The card is capped at 82% of the stage, so on a short window its content does
+  not fit and flex shrinks whatever it can. The prototype lets that shrink land
+  on the image's height while its width stays pinned at 100%, which squashes the
+  16:9 box — and object-fit: cover then crops the screenshot to match. Mild on a
+  tall window, severe on a short one.
+
+  Letting the width follow the height instead keeps the whole screenshot visible
+  at every size: it scales down and centres, matted by the card. On a phone the
+  card has vertical slack so nothing shrinks and this changes nothing.
+*/
 .deck-img {
   display: block;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  align-self: center;
   flex: 0 1 auto;
   min-height: 0;
   aspect-ratio: 16 / 9;
-  object-fit: cover;
-  object-position: center 20%;
+  object-fit: contain;
   border: 1px solid rgba(237, 235, 231, 0.07);
   border-radius: 12px;
 }

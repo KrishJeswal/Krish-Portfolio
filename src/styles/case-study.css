@@ -275,11 +275,27 @@
   text-align: center;
 }
 
+/*
+  The frame is the photo. Both dimensions stay auto so the element keeps the
+  screenshot's own intrinsic ratio, and the two maxes bound it: the column
+  width on a narrow screen, 56dvh on a tall one. CSS scales a replaced element
+  proportionally when it hits either, so the border never encloses anything
+  but the image.
+
+  flex-shrink: 0 is load-bearing. .case-top is a column flex box taller than
+  the viewport, so the default shrink squashed the box to whatever height was
+  left over and object-fit: cover then cropped the difference away — up to 40%
+  of the screenshot.
+*/
 .case-hero-img {
   display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 56dvh;
+  margin: 0 auto;
+  flex-shrink: 0;
+  object-fit: contain;
   border-radius: 18px;
   border: 1px solid var(--edge);
   box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.95);

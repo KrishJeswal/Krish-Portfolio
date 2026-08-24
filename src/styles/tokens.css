@@ -106,8 +106,16 @@ button {
   text-align: left;
 }
 
+/*
+  height: auto is load-bearing. The images carry width/height attributes so the
+  browser can reserve their box before they load, but those attributes are
+  presentational hints that set a real height — which outranks aspect-ratio.
+  Without this the deck's 16:9 box resolved toward the intrinsic 941px and the
+  screenshot was cropped square on narrow viewports.
+*/
 img {
   max-width: 100%;
+  height: auto;
 }
 
 :focus-visible {

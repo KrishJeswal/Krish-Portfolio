@@ -40,3 +40,6 @@ PROJECT.md
 
 # design references (local working artefact)
 design_handoff_portfolio/
+
+# image sources (regenerate public/assets with `npm run images`)
+art/

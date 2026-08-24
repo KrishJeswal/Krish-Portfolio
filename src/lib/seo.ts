@@ -62,7 +62,7 @@ function projectJsonLd(slug: ProjectSlug): string {
     "@type": "TechArticle",
     headline: `${project.name} — ${project.subtitle}`,
     description: describeProject(slug),
-    image: `${SITE_URL}${project.image}`,
+    image: `${SITE_URL}${project.ogImage}`,
     url: `${SITE_URL}/work/${project.slug}`,
     author: { "@type": "Person", name: profile.name, url: SITE_URL },
     datePublished: project.year,
@@ -82,7 +82,7 @@ export function metaForPath(pathname: string): PageMeta {
       description: describeProject(slug),
       canonical: `${SITE_URL}/work/${project.slug}`,
       ogType: "article",
-      image: `${SITE_URL}${project.image}`,
+      image: `${SITE_URL}${project.ogImage}`,
       jsonLd: projectJsonLd(slug),
     };
   }
