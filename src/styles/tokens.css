@@ -1,25 +1,20 @@
 /* ============================================================
-   MATTE OBJECTS — tokens and primitives
-   Everything on screen is a plate, a groove, a stack, a slot or
-   a tab, sitting on a near-black surface.
-
+   TOKENS — colour, type, elevation and z-index scales
    Display: Clash Display · Body: Satoshi · Chrome: IBM Plex Mono
    ============================================================ */
 
 :root {
   --bg: #0e0e0f;
-  --bg2: #141416;
 
-  --plate: #17171a; /* every raised card */
-  --groove: #131315; /* inset chips, tabs, slots */
-  --sheet: #111113; /* mobile sheet, diagram frame */
+  --plate: #17171a;
+  --groove: #131315;
+  --sheet: #111113;
 
   --ink: #edebe7;
   --ink2: #94928f;
   --ink3: #5a5957;
 
   --line: rgba(237, 235, 231, 0.13); /* section top border */
-  --line2: rgba(237, 235, 231, 0.06); /* hairlines inside plates */
   --edge: rgba(237, 235, 231, 0.09); /* plate border */
 
   --accent: #c6462f;
@@ -40,15 +35,16 @@
   --sink-tab: inset 0 3px 6px rgba(0, 0, 0, 0.7);
   --section-lip: 0 -50px 90px -30px rgba(0, 0, 0, 0.95), 0 -1px 0 rgba(237, 235, 231, 0.08);
 
-  --z-section: 1; /* sections climb from here, one per section */
   --z-rail: 60;
   --z-header: 70;
   --z-scrim: 75;
   --z-sheet: 80;
   --z-home-header: 300;
+  --z-cursor-ring: 320;
   --z-cursor: 321;
   --z-knock: 323;
   --z-loader: 400;
+  --z-skip: 500;
 }
 
 * {
@@ -130,37 +126,6 @@ html.is-blobbed * {
   cursor: none;
 }
 
-/* ---------- primitives ---------- */
-
-/* raised */
-.plate {
-  background: var(--plate);
-  border: 1px solid var(--edge);
-  box-shadow: var(--lift-plate);
-}
-
-/* raised, smaller — rows, tiles, buttons */
-.plate-row {
-  background: var(--plate);
-  border: 1px solid var(--edge);
-  box-shadow: var(--lift-row);
-}
-
-/* recessed */
-.groove {
-  background: var(--groove);
-  border: 1px solid var(--edge);
-  box-shadow: var(--sink-groove);
-}
-
-/* ---------- type utilities ---------- */
-
-.mono {
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-}
-
-/* section eyebrow — "03 / Selected work" */
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 13px;
@@ -186,7 +151,7 @@ html.is-blobbed * {
   position: fixed;
   left: 50%;
   top: 12px;
-  z-index: 500;
+  z-index: var(--z-skip);
   transform: translate(-50%, -180%);
   padding: 10px 18px;
   border-radius: 9px;
@@ -216,7 +181,6 @@ html.is-blobbed * {
   }
 }
 
-/* announced, not shown */
 .sr-only {
   position: absolute;
   width: 1px;

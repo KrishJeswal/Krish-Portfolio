@@ -80,7 +80,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* the reel plate can't crop, so it gives up its ratio and sizes to content */
   .reel-panel {
     aspect-ratio: auto;
     height: auto;

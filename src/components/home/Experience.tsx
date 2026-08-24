@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { ledger } from "../../data/home";
+import SectionEyebrow from "./SectionEyebrow";
 
-/**
- * The ledger. Hover, click or focus a row and the big year, the date range and
- * the detail line below all swap to it.
- */
 export default function Experience() {
   const [index, setIndex] = useState(0);
   const active = ledger[index];
@@ -20,7 +17,7 @@ export default function Experience() {
 
   return (
     <section className="panel panel--centred" id="experience" aria-label="Experience">
-      <span className="eyebrow">05 &nbsp;/&nbsp; Experience</span>
+      <SectionEyebrow id="experience" />
       <div className="ledger">
         <div className="ledger-head">
           <span className={`ledger-year${swapping ? " is-swapping" : ""}`}>{active.year}</span>
@@ -51,7 +48,7 @@ export default function Experience() {
           ))}
         </div>
 
-        {/* all four sit stacked; only the active one is on screen */}
+        {}
         <div className="ledger-details">
           {ledger.map((row, i) => (
             <p className={`ledger-detail${i === index ? " is-active" : ""}`} key={row.org}>

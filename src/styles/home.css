@@ -46,8 +46,6 @@
   --panel-gap: clamp(28px, 6vh, 64px);
 }
 
-/* Rounded top corners + a lip shadow are what make the overlap read as
-   physical sheets rather than as a colour change. */
 .panel:not(:first-child) {
   border-top: 1px solid var(--line);
   border-radius: clamp(20px, 2.6vw, 34px) clamp(20px, 2.6vw, 34px) 0 0;
@@ -65,7 +63,6 @@
   justify-content: center;
 }
 
-/* the deck needs the full width to fling cards off-screen */
 .panel--flush {
   padding-left: 0;
   padding-right: 0;
@@ -122,8 +119,6 @@
   box-shadow: var(--lift-row);
 }
 
-/* The tape carries all six numerals; only the active one is in the window,
-   so changing section rolls the digit rather than swapping it. */
 .roll-tape {
   position: absolute;
   inset: 0;
@@ -145,7 +140,6 @@
 
 .roll-window:hover .roll-tape,
 .roll-window:focus-visible .roll-tape {
-  /* overshoot past the resting position before settling */
   transition-timing-function: cubic-bezier(0.2, 1.3, 0.35, 1);
 }
 
@@ -268,7 +262,6 @@
   text-align: center;
 }
 
-/* pulls back the slide's gap so lead and body read as one block */
 .reel-body {
   font-size: clamp(13px, 1.3vw, 18px);
   line-height: 1.6;
@@ -355,7 +348,6 @@
   width: min(72vw, 640px);
   max-height: 82%;
   overflow: hidden;
-  /* pivot below the card, so the tilt reads as cards fanned on a table */
   transform-origin: 50% 130%;
   background: var(--plate);
   border: 1px solid var(--edge);
@@ -545,7 +537,6 @@
 
 .drawer.is-open {
   border-color: rgba(237, 235, 231, 0.16);
-  /* the open drawer slides out of the run, like a pulled tray */
   transform: translateX(clamp(-22px, -2vw, -8px));
 }
 
@@ -578,7 +569,6 @@
   letter-spacing: -0.02em;
 }
 
-/* the handle you'd hook a finger under */
 .drawer-pull {
   display: block;
   width: 34px;
@@ -705,7 +695,6 @@
   transition: transform 420ms var(--ease), border-color 300ms ease, box-shadow 420ms ease;
 }
 
-/* the active row presses into the page rather than lifting off it */
 .ledger-row.is-active {
   transform: translateY(2px) scale(0.995);
   border-color: var(--accent);
@@ -782,7 +771,6 @@
   align-items: stretch;
 }
 
-/* inset from the card edges, so the card visibly extends past the outer tabs */
 .tab-row {
   display: flex;
   gap: clamp(6px, 0.9vw, 10px);
@@ -959,7 +947,6 @@
   border: 1px solid var(--edge);
   box-shadow: inset 0 1px 0 rgba(237, 235, 231, 0.05), 0 40px 80px -34px rgba(0, 0, 0, 0.95);
   will-change: transform;
-  /* dealt in from above */
   opacity: 0;
   transform: translate(0, -88vh) rotate(-7deg);
 }
@@ -970,7 +957,6 @@
   transition: transform 940ms cubic-bezier(0.2, 1.18, 0.32, 1), opacity 380ms ease;
 }
 
-/* and flung off to the left when the count lands */
 .loader-card.is-spent {
   opacity: 0;
   transform: translate(-120vw, -10vh) rotate(-18deg);
@@ -1007,7 +993,6 @@
 
 /* ---------- hero deal ---------- */
 
-/* Two blocks landing in sequence, like cards dealt onto a table. */
 .js .hero-word {
   opacity: 0;
 }
@@ -1052,7 +1037,7 @@
   border: 1px solid var(--ink2);
   border-radius: 50%;
   pointer-events: none;
-  z-index: 320;
+  z-index: var(--z-cursor-ring);
   opacity: 0;
   transition: width 240ms ease, height 240ms ease, margin 240ms ease, border-color 240ms ease,
     opacity 300ms ease;
@@ -1085,12 +1070,6 @@
   opacity: 1;
 }
 
-/*
-  The blob is an accent-filled amoeba with a copy of the hero and the header
-  drawn inside it in the page's background colour — a knockout, not an overlay.
-  Its eight radii wobble on independent periods so it never resolves to an
-  ellipse.
-*/
 .knock {
   position: fixed;
   left: 0;
@@ -1131,7 +1110,6 @@
   box-shadow: none !important;
 }
 
-/* thin type loses weight when knocked out, so it gets a step back */
 .knock-mirror .role,
 .knock-mirror .wordmark,
 .knock-mirror .roll-label,

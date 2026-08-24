@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { contactIntro, contactTabs, profile } from "../../data/home";
+import SectionEyebrow from "./SectionEyebrow";
 
 type CopyState = "idle" | "copied" | "failed";
 
@@ -21,7 +22,6 @@ export default function Contact() {
       await navigator.clipboard.writeText(profile.email);
       setState("copied");
     } catch {
-      // Clipboard access can be denied outright; say so rather than lying.
       setState("failed");
     }
     timer.current = window.setTimeout(() => setState("idle"), 1400);
@@ -29,7 +29,7 @@ export default function Contact() {
 
   return (
     <section className="panel panel--centred" id="contact" aria-label="Contact">
-      <span className="eyebrow">06 &nbsp;/&nbsp; Contact</span>
+      <SectionEyebrow id="contact" />
       <div className="contact">
         <div className="contact-folder">
           <div className="tab-row">

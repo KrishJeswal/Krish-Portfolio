@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { drawers } from "../../data/home";
+import SectionEyebrow from "./SectionEyebrow";
 
-/**
- * Drawers. Only one is out at a time, and clicking the open one pushes it back
- * in — hence `open` going to -1 rather than staying pinned to a tab.
- */
 export default function Skills() {
   const [open, setOpen] = useState(0);
 
   return (
     <section className="panel" id="skills" aria-label="Skills">
-      <span className="eyebrow">04 &nbsp;/&nbsp; Skills</span>
+      <SectionEyebrow id="skills" />
       <div className="drawers">
         {drawers.map((drawer, i) => (
           <DrawerView

@@ -6,7 +6,7 @@
  * the point in the document where that panel takes over. Compute the offset
  * from the document instead.
  */
-export function scrollToElement(el: Element, offset = 0): void {
+function scrollToElement(el: Element, offset = 0): void {
   const top = window.scrollY + el.getBoundingClientRect().top - offset;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });

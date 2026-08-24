@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { projects } from "../../data/projects";
+import SectionEyebrow from "./SectionEyebrow";
 
-/** Past this much horizontal travel, releasing throws the card away. */
 const FLING_THRESHOLD = 80;
 /** Below this the gesture hasn't committed to an axis yet. */
 const AXIS_SLOP = 5;
@@ -13,7 +13,6 @@ const FLING_MS = 380;
 
 /** Depth 0 is the front card; 1, 2, 3 sit behind it. */
 function deckTransform(depth: number, index: number): string {
-  // alternating tilt sign by index, so the stack looks hand-placed
   const tilt = depth === 0 ? 0 : (index % 2 ? 1 : -1) * (2.8 + depth * 1.3);
   return `translate(-50%,-50%) translateY(${depth * -22}px) scale(${1 - depth * 0.045}) rotate(${tilt}deg)`;
 }
@@ -87,7 +86,7 @@ export default function Work({ active }: { active: boolean }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
+  }, [active, fling, count]);
 
   const endGesture = () => {
     const g = gesture.current;
@@ -107,7 +106,6 @@ export default function Work({ active }: { active: boolean }) {
         setIndex((prev) => (prev + 1) % count);
       }, FLING_MS);
     } else if (!moved) {
-      // a tap — advance without throwing anything
       advance(1);
     }
     // moved but under the threshold: the card springs back on its own, because
@@ -158,7 +156,7 @@ export default function Work({ active }: { active: boolean }) {
 
   return (
     <section className="panel panel--flush" id="work" aria-label="Selected work">
-      <span className="eyebrow">03 &nbsp;/&nbsp; Selected work</span>
+      <SectionEyebrow id="work" />
 
       <div
         className="deck-stage"
@@ -206,7 +204,16 @@ export default function Work({ active }: { active: boolean }) {
                   <span className="deck-num">{String(i + 1).padStart(2, "0")}</span>
                   <span className="deck-rule" />
                 </div>
-                <img className="deck-img" src={project.image} alt={project.imageAlt} draggable={false} />
+                <img
+                  className="deck-img"
+                  src={project.image}
+                  alt={project.imageAlt}
+                  width={1672}
+                  height={941}
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
+                />
                 <div className="deck-foot">
                   <div className="deck-titles">
                     <h3 className="deck-title">{project.name}</h3>

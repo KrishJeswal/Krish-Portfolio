@@ -7,7 +7,7 @@ export default function CaseTop({ project }: { project: Project }) {
         <span className="case-eyebrow">
           {project.domain}&nbsp;&middot;&nbsp;{project.year}
         </span>
-        {/* letters animate in individually, staggered */}
+        {}
         <h1 className="case-title" aria-label={project.name}>
           {[...project.name].map((letter, i) => (
             <span key={i} aria-hidden="true" style={{ animationDelay: `${i * 42}ms` }}>
@@ -17,7 +17,14 @@ export default function CaseTop({ project }: { project: Project }) {
         </h1>
         <p className="case-subtitle">{project.subtitle}</p>
       </div>
-      <img className="case-hero-img" src={project.image} alt={project.imageAlt} />
+      <img
+        className="case-hero-img"
+        src={project.image}
+        alt={project.imageAlt}
+        width={1672}
+        height={941}
+        decoding="async"
+      />
     </section>
   );
 }

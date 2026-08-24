@@ -40,7 +40,6 @@ export default function CaseStudy() {
 
   const project = valid ? projectBySlug(slug) : null;
 
-  // A new project is a new read — start it at the top.
   useEffect(() => {
     if (project) window.scrollTo({ top: 0, behavior: "auto" });
   }, [project]);

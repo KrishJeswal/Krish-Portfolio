@@ -7,7 +7,7 @@
  * Anything typographic (— · ⊕ → ×) is a literal character, as in the design.
  */
 
-export const PROJECT_SLUGS = ["ciphertrace", "lorerecall", "glyphmark", "pathfindr"] as const;
+const PROJECT_SLUGS = ["ciphertrace", "lorerecall", "glyphmark", "pathfindr"] as const;
 
 export type ProjectSlug = (typeof PROJECT_SLUGS)[number];
 
@@ -15,17 +15,10 @@ export function isProjectSlug(value: string): value is ProjectSlug {
   return (PROJECT_SLUGS as readonly string[]).includes(value);
 }
 
-/* ---------- architecture diagrams (native markup, not images) ---------- */
-
 /** A small plate. First line is --ink, the rest --ink2. */
 export type DiagramNode = {
   readonly lines: readonly string[];
-  /** Key nodes in the flow take an accent border. */
   readonly accent?: true;
-  /**
-   * Somewhere data comes to rest — a database, a registry, a path on disk.
-   * Drawn as a pill so stores read differently from the steps between them.
-   */
   readonly store?: true;
 };
 
@@ -38,12 +31,8 @@ export type DiagramItem =
       readonly dashed?: true;
       readonly accent?: true;
     }
-  /** Parallel branches. A single column is a stack of alternatives. */
   | { readonly kind: "row"; readonly columns: 1 | 2 | 3; readonly nodes: readonly DiagramNode[] }
-  /** A labelled sub-frame — one pipeline inside the whole. */
   | { readonly kind: "group"; readonly label: string; readonly items: readonly DiagramItem[] };
-
-/* ---------- prose blocks ---------- */
 
 export type Block =
   | { readonly kind: "lead"; readonly text: string }
@@ -62,8 +51,6 @@ export type Block =
     }
   | { readonly kind: "diagram"; readonly items: readonly DiagramItem[] };
 
-/* ---------- sections ---------- */
-
 export const CASE_SECTIONS = [
   { id: "top", number: null, label: "Overview" },
   { id: "capture", number: "01", label: "Capture" },
@@ -81,7 +68,6 @@ export type WrittenSectionId = Exclude<CaseSectionId, "top">;
 export type Project = {
   readonly slug: ProjectSlug;
   readonly name: string;
-  /** One line, used on the deck card and under the case-study title. */
   readonly subtitle: string;
   readonly domain: string;
   readonly year: string;
@@ -325,7 +311,7 @@ const lorerecall: Project = {
   subtitle: "Agentic Second Brain",
   domain: "ML · RAG",
   year: "2025",
-  image: "/assets/lorerecall-v2.png",
+  image: "/assets/lorerecall.png",
   imageAlt: "LoreRecall pipeline interface",
   repo: "https://github.com/KrishJeswal/LoreRecall",
   sections: {
@@ -518,7 +504,7 @@ const glyphmark: Project = {
   subtitle: "Multi-Surface MCP Toolchain",
   domain: "Systems · TypeScript",
   year: "2025",
-  image: "/assets/glyphmark-v3.png",
+  image: "/assets/glyphmark.png",
   imageAlt: "GlyphMark toolchain",
   repo: "https://github.com/KrishJeswal/GlyphMark",
   sections: {
@@ -878,7 +864,6 @@ export function projectBySlug(slug: ProjectSlug): Project {
   return found;
 }
 
-/** The deck and the case-study footer both cycle 1→2→3→4→1. */
 export function nextProject(slug: ProjectSlug): Project {
   const i = projects.findIndex((p) => p.slug === slug);
   return projects[(i + 1) % projects.length];

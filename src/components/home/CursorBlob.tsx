@@ -1,7 +1,6 @@
 import { useEffect, useRef, type ReactNode, type RefObject } from "react";
 import { useFinePointer, useReducedMotion } from "../../lib/env";
 
-/** How hard the blob chases the pointer each frame. */
 const BLOB_LERP = 0.28;
 /**
  * Dot and ring share one position, so the ring is always concentric with the
@@ -9,41 +8,27 @@ const BLOB_LERP = 0.28;
  * off-centre inside the ring whenever the pointer moved quickly.
  */
 const CURSOR_LERP = 0.4;
-/** Wobble clock advance per frame. */
 const WOBBLE_STEP = 0.042;
-/** Pointer speed at which the blob's stretch tops out. */
 const SPEED_CAP = 46;
 
 const BLOB_MIN = 112;
 const BLOB_MAX = 272;
 
-/** Elements that a real copy of the pointer should react to. */
 const HOT = "a,button,[role='button'],input,textarea,select";
 
 export type Mirror = {
-  /** The live element whose position and size the copy tracks. */
   ref: RefObject<HTMLElement | null>;
-  /** Layout classes to reuse so the copy lays out identically. */
   className?: string;
   /** The same content, rendered again — not a DOM clone, so it stays in sync. */
   node: ReactNode;
 };
 
-/**
- * Custom pointer, plus the hero knockout blob.
- *
- * The blob only comes up over the hero, and only at the top of the page. All
- * of it is off on touch devices and under reduced motion, where the native
- * cursor is left alone.
- */
 export default function CursorBlob({
   hostRef,
   sizeRef,
   mirrors,
 }: {
-  /** The area the blob comes up over. */
   hostRef: RefObject<HTMLElement | null>;
-  /** Sized off the hero type, so the blob scales with the headline. */
   sizeRef: RefObject<HTMLElement | null>;
   mirrors: readonly Mirror[];
 }) {
@@ -73,7 +58,6 @@ export default function CursorBlob({
     document.documentElement.classList.add("is-blobbed");
 
     const half = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    // pointer, then the three things chasing it at their own rates
     let mx = half.x;
     let my = half.y;
     let cx = mx;
@@ -141,9 +125,6 @@ export default function CursorBlob({
     };
     sizeBlob();
 
-    // Eight radii — four horizontal, four vertical — each summing two sine
-    // waves on incommensurate periods, plus a speed term that stretches the
-    // blob while the pointer is moving fast.
     const radius = (f1: number, p1: number, f2: number, p2: number, speed: number): string =>
       `${(
         50 +

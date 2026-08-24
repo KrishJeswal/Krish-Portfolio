@@ -49,10 +49,6 @@ function Item({ item }: { item: DiagramItem }) {
   }
 }
 
-/**
- * Architecture flowcharts are native markup, not images — they stay legible at
- * any width, reflow on phones, and are readable by a screen reader.
- */
 export default function Diagram({ items }: { items: readonly DiagramItem[] }) {
   return (
     <div className="diagram">

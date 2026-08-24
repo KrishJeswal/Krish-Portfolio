@@ -3,16 +3,11 @@ import { useReducedMotion } from "../../lib/env";
 
 const TICK_MS = 26;
 const STEP = 2;
-/** Beat after the count lands, before the card is thrown. */
 const HOLD_MS = 260;
 /** The hero starts dealing while the loader is still fading. */
 const HERO_MS = 170;
 const GONE_MS = 820;
 
-/**
- * A plate dealt onto the page, counting up, then thrown aside. Announces when
- * it's done so the hero can deal its own name in behind it.
- */
 export default function Loader({ onDone }: { onDone: () => void }) {
   const reduced = useReducedMotion();
   const [count, setCount] = useState(0);

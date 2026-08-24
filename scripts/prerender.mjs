@@ -20,7 +20,7 @@ const dist = join(root, "dist");
 
 // pathToFileURL, not a bare path: on Windows a dynamic import of an absolute
 // path is parsed as a URL with scheme "c:" and rejected by the ESM loader.
-const { render, metaForPath, ROUTES } = await import(
+const { render, metaForPath, ROUTES, SITE_URL } = await import(
   pathToFileURL(join(root, ".ssr-build", "entry-server.js")).href
 );
 
@@ -54,7 +54,6 @@ for (const route of ROUTES) {
   const appHtml = render(route);
 
   const html = template
-    // the shell ships a generic title and description; each route replaces them
     .replace(/<title>[\s\S]*?<\/title>/, "@@HEAD@@")
     .replace(/\s*<meta\s+name="description"[\s\S]*?\/>/, "")
     .replace("@@HEAD@@", headFor(meta))
@@ -69,8 +68,6 @@ for (const route of ROUTES) {
   count += 1;
 }
 
-/* Discovery files, generated from the same route list so they cannot drift. */
-const SITE = "https://krish-jeswal.web.app";
 const today = new Date().toISOString().slice(0, 10);
 
 writeFileSync(
@@ -79,7 +76,7 @@ writeFileSync(
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${ROUTES.map(
   (r) =>
-    `  <url><loc>${SITE}${r === "/" ? "/" : r}</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>${r === "/" ? "1.0" : "0.8"}</priority></url>`
+    `  <url><loc>${SITE_URL}${r === "/" ? "/" : r}</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>${r === "/" ? "1.0" : "0.8"}</priority></url>`
 ).join("\n")}
 </urlset>
 `,
@@ -91,7 +88,7 @@ writeFileSync(
   `User-agent: *
 Allow: /
 
-Sitemap: ${SITE}/sitemap.xml
+Sitemap: ${SITE_URL}/sitemap.xml
 `,
   "utf8"
 );

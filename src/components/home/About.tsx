@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { reelPanels, roles } from "../../data/home";
+import SectionEyebrow from "./SectionEyebrow";
 
-/**
- * A 16:9 plate holding a horizontal tape of three panels. The tape slides one
- * panel width per index, so the plate reads as a window onto a strip of film.
- */
 export default function About() {
   const [index, setIndex] = useState(0);
 
   return (
     <section className="panel panel--centred" id="about" aria-label="About">
-      <span className="eyebrow">02 &nbsp;/&nbsp; About</span>
+      <SectionEyebrow id="about" />
       <div className="reel">
         <div className="reel-panel">
           <div className="reel-tape" style={{ transform: `translateX(${-index * 100}%)` }}>
@@ -35,7 +32,7 @@ export default function About() {
           </div>
         </div>
         <div className="reel-buttons" role="tablist" aria-label="Discipline">
-          {/* the buttons carry the hero's role casing, the headings their own */}
+          {}
           {roles.map((role, i) => (
             <button
               type="button"

@@ -1,4 +1,3 @@
-/** Home page content. Section order here drives the nav numerals and the scroll spy. */
 
 export const profile = {
   name: "Krish Jeswal",
@@ -30,9 +29,7 @@ export const sections = [
 
 export type SectionId = (typeof sections)[number]["id"];
 
-/* ---------- about reel ---------- */
-
-export type ReelPanel = {
+type ReelPanel = {
   readonly number: string;
   readonly channel: string;
   readonly title: string;
@@ -80,9 +77,7 @@ export const reelPanels: readonly ReelPanel[] = [
   },
 ];
 
-/* ---------- skills drawers ---------- */
-
-export type Drawer = {
+type Drawer = {
   readonly number: string;
   readonly title: string;
   readonly tiles: readonly string[];
@@ -145,9 +140,7 @@ export const drawers: readonly Drawer[] = [
   },
 ];
 
-/* ---------- experience ledger ---------- */
-
-export type LedgerRow = {
+type LedgerRow = {
   readonly org: string;
   readonly role: string;
   readonly year: string;
@@ -188,8 +181,6 @@ export const ledger: readonly LedgerRow[] = [
     detail: "Physics, Chemistry, Maths and Computer Science.",
   },
 ];
-
-/* ---------- contact ---------- */
 
 export const contactTabs = [
   { label: "GitHub", href: profile.github },

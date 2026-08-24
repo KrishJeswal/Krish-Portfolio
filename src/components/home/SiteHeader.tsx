@@ -26,8 +26,7 @@ export function HeaderContent({ active, onHome }: { active: number; onHome?: () 
       <nav className="roll" aria-label="Current section">
         <span className="roll-label">{sections[active].label}</span>
         <div className="roll-window">
-          {/* the tape carries all six numerals; changing section rolls the
-              digit into the aperture rather than swapping it */}
+          {}
           <div
             className="roll-tape"
             style={{

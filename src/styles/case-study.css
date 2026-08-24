@@ -46,7 +46,6 @@
   color: var(--ink3);
 }
 
-/* the pill replaces the counter once the rail becomes a sheet */
 .case-pill {
   display: none;
   align-items: center;
@@ -172,7 +171,6 @@
   line-height: 1;
 }
 
-/* the reading measure — everything narrative sits inside it */
 .case-prose {
   align-self: center;
   width: 100%;
@@ -195,7 +193,6 @@
   color: var(--ink);
 }
 
-/* enter-on-first-view */
 @keyframes case-in {
   from {
     opacity: 0;
@@ -500,7 +497,6 @@
   background: rgba(237, 235, 231, 0.14);
 }
 
-/* connectors inside a group are shorter — the steps sit tighter together */
 .dg-group .dg-line {
   height: 10px;
 }
@@ -542,7 +538,6 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-/* a store is a pill — data at rest, not a step on the way */
 .dg-node.is-store {
   border-radius: 22px;
 }

@@ -1,8 +1,8 @@
-import { projects, isProjectSlug, projectBySlug } from "../data/projects";
+import { projects, isProjectSlug, projectBySlug, type ProjectSlug } from "../data/projects";
 import { profile, roles } from "../data/home";
 
 export const SITE_URL = "https://krish-jeswal.web.app";
-export const OG_IMAGE = `${SITE_URL}/og.png`;
+const OG_IMAGE = `${SITE_URL}/og.png`;
 
 export type PageMeta = {
   readonly path: string;
@@ -10,9 +10,7 @@ export type PageMeta = {
   readonly description: string;
   readonly canonical: string;
   readonly ogType: "website" | "article";
-  /** Absolute URL. Case studies show their own screenshot; home shows the card. */
   readonly image: string;
-  /** JSON-LD, already stringified. */
   readonly jsonLd: string;
 };
 
@@ -25,8 +23,7 @@ const HOME_DESCRIPTION =
  * Taking them from the same data the page renders means the description can
  * never drift from the article.
  */
-function describeProject(slug: string): string {
-  if (!isProjectSlug(slug)) return HOME_DESCRIPTION;
+function describeProject(slug: ProjectSlug): string {
   const project = projectBySlug(slug);
   const prose = project.sections.capture
     .filter((b) => b.kind === "lead" || b.kind === "body")
@@ -58,8 +55,8 @@ function homeJsonLd(): string {
   });
 }
 
-function projectJsonLd(slug: string): string {
-  const project = projectBySlug(slug as never);
+function projectJsonLd(slug: ProjectSlug): string {
+  const project = projectBySlug(slug);
   return JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TechArticle",
@@ -101,7 +98,6 @@ export function metaForPath(pathname: string): PageMeta {
   };
 }
 
-/** Every route the prerenderer and the sitemap need to cover. */
 export const ROUTES: readonly string[] = [
   "/",
   ...projects.map((p) => `/work/${p.slug}`),

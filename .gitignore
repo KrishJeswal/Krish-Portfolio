@@ -15,6 +15,8 @@ dist/
 
 # Firebase
 .firebase/
+firebase-debug.log*
+firestore-debug.log*
 # OS
 .DS_Store
 Thumbs.db
@@ -35,3 +37,6 @@ pnpm-debug.log*
 *.tsbuildinfo
 
 PROJECT.md
+
+# design references (local working artefact)
+design_handoff_portfolio/
