@@ -1,72 +1,18 @@
-import { useState } from "react";
-import { useGSAP } from "@gsap/react";
-import { ScrollSmoother, ScrollTrigger, prefersReducedMotion } from "./lib/gsap";
-import Cursor from "./components/Cursor";
-import Preloader from "./components/Preloader";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import About from "./components/About";
-import Projects from "./components/Projects";
-import TechStack from "./components/TechStack";
-import Timeline from "./components/Timeline";
-import Contact from "./components/Contact";
-import Footer from "./components/Footer";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import CaseStudy from "./pages/CaseStudy";
 
 export default function App() {
-  const [loaded, setLoaded] = useState(false);
-
-  useGSAP(() => {
-    if (prefersReducedMotion()) return;
-    const smoother = ScrollSmoother.create({
-      wrapper: "#smooth-wrapper",
-      content: "#smooth-content",
-      smooth: 1.1,
-      effects: true,
-    });
-    if (import.meta.env.DEV) (window as unknown as { __smoother: unknown }).__smoother = smoother;
-    const refresh = () => ScrollTrigger.refresh();
-    document.fonts.ready.then(refresh);
-    window.addEventListener("load", refresh);
-    return () => {
-      window.removeEventListener("load", refresh);
-      smoother.kill();
-    };
-  }, []);
-
-  // Once the preloader unmounts and layout is final, recompute every trigger's
-  // position. Section reveals are created at mount (before ScrollSmoother and
-  // before the preloader clears), so without this refresh their start points
-  // are stale and reveals can stay stuck hidden.
-  useGSAP(
-    () => {
-      if (!loaded || prefersReducedMotion()) return;
-      const id = requestAnimationFrame(() => ScrollTrigger.refresh());
-      return () => cancelAnimationFrame(id);
-    },
-    { dependencies: [loaded] }
-  );
-
   return (
     <>
-      <a className="skip-link" href="#top">
+      <a className="skip-link" href="#hero">
         Skip to content
       </a>
-      <Cursor />
-      <Preloader onComplete={() => setLoaded(true)} />
-      <Navbar visible={loaded} />
-      <div id="smooth-wrapper">
-        <div id="smooth-content">
-          <main>
-            <Hero play={loaded} />
-            <About />
-            <Projects />
-            <TechStack />
-            <Timeline />
-            <Contact />
-          </main>
-          <Footer />
-        </div>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/work/:slug" element={<CaseStudy />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 }
