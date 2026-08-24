@@ -815,8 +815,15 @@
   card. Translating it instead opens a visible gap underneath, so the height
   change has to come from margin-top plus an equal padding-bottom.
 */
+/*
+  :focus-visible, not :focus. These tabs are target="_blank" links, so a
+  mouse click leaves focus on the tab after the new browser tab opens — with
+  bare :focus it stays grown and accent-filled until you click elsewhere.
+  focus-visible still gives keyboard users the affordance, which is the point
+  of matching hover on focus in the first place.
+*/
 .tab:hover,
-.tab:focus {
+.tab:focus-visible {
   margin-top: -7px;
   padding-bottom: 22px;
   background: var(--accent);
