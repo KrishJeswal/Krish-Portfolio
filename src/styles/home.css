@@ -1,0 +1,1140 @@
+/* ============================================================
+   HOME — six sticky panels, each sliding up over the last
+   ============================================================ */
+
+.panel {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(84px, 13vh, 150px) clamp(24px, 7vw, 120px) clamp(40px, 7vh, 84px);
+  gap: var(--panel-gap);
+  will-change: transform, filter;
+}
+
+/*
+  Each panel sets its own vertical rhythm; these are not interchangeable.
+  The deck runs tight because the stage takes the leftover height, while
+  about and contact run generous so the eyebrow reads as a label above a
+  separate object rather than as part of it.
+*/
+#hero {
+  --panel-gap: clamp(30px, 7vh, 74px);
+}
+
+#about {
+  --panel-gap: clamp(28px, 6vh, 68px);
+}
+
+#work {
+  --panel-gap: clamp(12px, 2.4vh, 28px);
+}
+
+#skills {
+  --panel-gap: clamp(16px, 3vh, 32px);
+}
+
+#experience {
+  --panel-gap: clamp(12px, 2.6vh, 40px);
+}
+
+#contact {
+  --panel-gap: clamp(28px, 6vh, 64px);
+}
+
+/* Rounded top corners + a lip shadow are what make the overlap read as
+   physical sheets rather than as a colour change. */
+.panel:not(:first-child) {
+  border-top: 1px solid var(--line);
+  border-radius: clamp(20px, 2.6vw, 34px) clamp(20px, 2.6vw, 34px) 0 0;
+  box-shadow: var(--section-lip);
+}
+
+.panel:nth-child(1) { z-index: 1; }
+.panel:nth-child(2) { z-index: 2; }
+.panel:nth-child(3) { z-index: 3; }
+.panel:nth-child(4) { z-index: 4; }
+.panel:nth-child(5) { z-index: 5; }
+.panel:nth-child(6) { z-index: 6; }
+
+.panel--centred {
+  justify-content: center;
+}
+
+/* the deck needs the full width to fling cards off-screen */
+.panel--flush {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ---------- header ---------- */
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: var(--z-home-header);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: clamp(22px, 3.4vw, 40px) clamp(24px, 5vw, 64px);
+  pointer-events: none;
+}
+
+.wordmark {
+  pointer-events: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* ---------- nav roll ---------- */
+
+.roll {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.roll-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  transition: opacity 300ms ease;
+}
+
+.roll-window {
+  position: relative;
+  width: 44px;
+  height: 34px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  box-shadow: var(--lift-row);
+}
+
+/* The tape carries all six numerals; only the active one is in the window,
+   so changing section rolls the digit rather than swapping it. */
+.roll-tape {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  transition: transform 560ms var(--ease);
+}
+
+.roll-digit {
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.roll-window:hover .roll-tape,
+.roll-window:focus-visible .roll-tape {
+  /* overshoot past the resting position before settling */
+  transition-timing-function: cubic-bezier(0.2, 1.3, 0.35, 1);
+}
+
+/* ---------- 01 hero ---------- */
+
+.hero-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(30px, 7vh, 74px);
+  width: 100%;
+}
+
+.hero-name {
+  margin: 0;
+  font-weight: 600;
+  font-size: clamp(44px, 10.4vw, 180px);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.3em;
+}
+
+.hero-word {
+  display: block;
+  will-change: transform;
+}
+
+.hero-roles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(14px, 2.6vw, 38px);
+}
+
+.role {
+  font-family: var(--font-mono);
+  font-size: clamp(12px, 1.4vw, 15px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  transition: color 500ms ease;
+}
+
+.role-bar {
+  display: block;
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  transition: background 500ms ease;
+}
+
+/* ---------- 02 about: reel ---------- */
+
+.reel {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 3.4vh, 36px);
+}
+
+.reel-panel {
+  position: relative;
+  flex: 0 0 auto;
+  aspect-ratio: 16 / 9;
+  width: auto;
+  max-width: min(94%, 900px);
+  height: min(calc(min(94vw, 900px) * 9 / 16), 100%);
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  box-shadow: var(--lift-row);
+}
+
+.reel-tape {
+  display: flex;
+  height: 100%;
+  transition: transform 700ms var(--ease);
+}
+
+.reel-slide {
+  flex: 0 0 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: clamp(10px, 1.8vh, 18px);
+  padding: clamp(26px, 4vw, 54px);
+}
+
+.reel-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.reel-title {
+  margin: 0;
+  font-size: clamp(20px, 2.5vw, 34px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.reel-lead {
+  font-size: clamp(14px, 1.4vw, 19px);
+  line-height: 1.55;
+  color: var(--ink2);
+  max-width: 52ch;
+  text-align: center;
+}
+
+/* pulls back the slide's gap so lead and body read as one block */
+.reel-body {
+  font-size: clamp(13px, 1.3vw, 18px);
+  line-height: 1.6;
+  color: var(--ink2);
+  max-width: 56ch;
+  text-align: center;
+  margin-top: calc(-1 * clamp(10px, 1.8vh, 18px));
+}
+
+.reel-facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(14px, 2.4vw, 34px);
+  margin-top: clamp(4px, 1vh, 10px);
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.fact-value {
+  font-size: clamp(13px, 1.25vw, 17px);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.reel-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(12px, 2.4vw, 30px);
+}
+
+.reel-btn {
+  padding: 7px 13px;
+  border-radius: 7px;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  box-shadow: var(--lift-row);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  cursor: pointer;
+  transition: color 260ms ease, border-color 260ms ease;
+}
+
+.reel-btn:hover {
+  color: var(--ink2);
+}
+
+.reel-btn[aria-selected="true"] {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
+/* ---------- 03 work: deck ---------- */
+
+.deck-stage {
+  flex: 1;
+  align-self: stretch;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.deck-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(72vw, 640px);
+  max-height: 82%;
+  overflow: hidden;
+  /* pivot below the card, so the tilt reads as cards fanned on a table */
+  transform-origin: 50% 130%;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  border-radius: 20px;
+  box-shadow: inset 0 1px 0 rgba(237, 235, 231, 0.05), 0 40px 70px -34px rgba(0, 0, 0, 0.95);
+  padding: clamp(14px, 2.2vh, 26px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.6vh, 18px);
+  will-change: transform;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 620ms var(--ease), opacity 420ms ease;
+}
+
+.deck-card.is-dragging {
+  cursor: grabbing;
+  transition: none;
+}
+
+.deck-card.is-flying {
+  transition: transform 420ms var(--ease-out-fast), opacity 340ms ease;
+}
+
+.deck-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.6vh, 18px);
+  min-height: 0;
+  flex: 1;
+  transition: opacity 380ms ease;
+}
+
+.deck-head {
+  display: flex;
+  flex-shrink: 0;
+  align-items: baseline;
+  gap: 14px;
+  padding: 0 clamp(2px, 0.6vw, 8px);
+}
+
+.deck-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+.deck-rule {
+  flex: 1;
+  height: 1px;
+  background: rgba(237, 235, 231, 0.1);
+}
+
+.deck-img {
+  display: block;
+  width: 100%;
+  flex: 0 1 auto;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center 20%;
+  border: 1px solid rgba(237, 235, 231, 0.07);
+  border-radius: 12px;
+}
+
+.deck-foot {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(12px, 2vw, 26px);
+  padding: 0 clamp(2px, 0.6vw, 8px);
+}
+
+.deck-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.deck-title {
+  margin: 0;
+  font-size: clamp(24px, 3.4vw, 46px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.deck-desc {
+  font-size: clamp(13px, 1.25vw, 17px);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--ink2);
+  text-align: left;
+}
+
+.deck-link {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 4px;
+}
+
+.deck-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 clamp(24px, 7vw, 120px);
+}
+
+.deck-step {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink3);
+  cursor: pointer;
+  transition: color 240ms ease;
+}
+
+.deck-step:hover {
+  color: var(--accent);
+}
+
+.deck-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--ink3);
+}
+
+.deck-counter-window {
+  position: relative;
+  display: block;
+  width: 2.4ch;
+  height: 16px;
+  overflow: hidden;
+}
+
+.deck-counter-tape {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  transition: transform 500ms cubic-bezier(0.2, 1.3, 0.35, 1);
+}
+
+.deck-counter-digit {
+  flex: 0 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- 04 skills: drawers ---------- */
+
+.drawers {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 1.8vh, 18px);
+}
+
+.drawer {
+  width: min(94%, 860px);
+  border-radius: 14px;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  box-shadow: var(--lift-row);
+  overflow: hidden;
+  transition: transform 560ms var(--ease), border-color 300ms ease;
+}
+
+.drawer.is-open {
+  border-color: rgba(237, 235, 231, 0.16);
+  /* the open drawer slides out of the run, like a pulled tray */
+  transform: translateX(clamp(-22px, -2vw, -8px));
+}
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: clamp(13px, 2vh, 20px) clamp(18px, 2.6vw, 30px);
+  cursor: pointer;
+}
+
+.drawer-label {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.drawer-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+.drawer-title {
+  font-size: clamp(15px, 1.7vw, 23px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* the handle you'd hook a finger under */
+.drawer-pull {
+  display: block;
+  width: 34px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(237, 235, 231, 0.16);
+  transition: background 300ms ease, width 420ms var(--ease);
+}
+
+.drawer-head:hover .drawer-pull,
+.drawer.is-open .drawer-pull {
+  background: var(--accent);
+  width: 54px;
+}
+
+.drawer-body {
+  overflow: hidden;
+}
+
+.js .drawer-body {
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 560ms var(--ease), opacity 400ms ease;
+}
+
+.drawer.is-open .drawer-body {
+  opacity: 1;
+}
+
+.drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(8px, 1.2vw, 14px);
+  padding: clamp(6px, 1.2vh, 10px) clamp(18px, 2.6vw, 30px) clamp(18px, 2.8vh, 28px);
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(10px, 1.6vh, 16px) clamp(8px, 1.2vw, 14px);
+  border-radius: 9px;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  box-shadow: var(--lift-row);
+  font-family: var(--font-mono);
+  font-size: clamp(12px, 1.15vw, 15px);
+  letter-spacing: 0.02em;
+  color: var(--ink2);
+  /* several labels are long enough to overflow a two-column phone layout */
+  overflow-wrap: anywhere;
+  min-width: 0;
+  transition: transform 420ms var(--ease), color 260ms ease, border-color 260ms ease;
+}
+
+.tile:hover {
+  transform: translateY(-2px);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ---------- 05 experience: ledger ---------- */
+
+.ledger {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2.6vh, 28px);
+}
+
+.ledger-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.ledger-year {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6.4vw, 110px);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 0.85;
+  transition: opacity 280ms ease, transform 420ms var(--ease);
+}
+
+.ledger-year.is-swapping {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: none;
+}
+
+.ledger-range {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.ledger-rows {
+  width: min(760px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.ledger-row {
+  width: 100%;
+  padding: clamp(10px, 1.7vh, 18px) clamp(15px, 2.2vw, 26px);
+  border-radius: 12px;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  box-shadow: var(--lift-row);
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  transition: transform 420ms var(--ease), border-color 300ms ease, box-shadow 420ms ease;
+}
+
+/* the active row presses into the page rather than lifting off it */
+.ledger-row.is-active {
+  transform: translateY(2px) scale(0.995);
+  border-color: var(--accent);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.55);
+}
+
+.ledger-org {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: clamp(15px, 1.8vw, 23px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink2);
+  transition: color 320ms ease;
+}
+
+.ledger-role {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  flex: 0 1 auto;
+  white-space: nowrap;
+  transition: color 320ms ease;
+}
+
+.ledger-row.is-active .ledger-org {
+  color: var(--ink);
+}
+
+.ledger-row.is-active .ledger-role {
+  color: var(--ink2);
+}
+
+.ledger-details {
+  position: relative;
+  overflow: hidden;
+  width: min(60ch, 100%);
+  height: clamp(50px, 9vh, 86px);
+}
+
+.ledger-detail {
+  position: absolute;
+  inset: 0;
+  font-size: clamp(13px, 1.15vw, 15px);
+  line-height: 1.6;
+  color: var(--ink2);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(104%);
+  transition: opacity 200ms ease, transform 340ms cubic-bezier(0.5, 0, 0.75, 0);
+}
+
+.ledger-detail.is-active {
+  opacity: 1;
+  transform: none;
+  transition: opacity 300ms ease 120ms, transform 620ms cubic-bezier(0.2, 1.22, 0.35, 1) 90ms;
+}
+
+/* ---------- 06 contact: filing tabs ---------- */
+
+.contact {
+  width: min(620px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: clamp(12px, 2vh, 20px);
+}
+
+.contact-folder {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* inset from the card edges, so the card visibly extends past the outer tabs */
+.tab-row {
+  display: flex;
+  gap: clamp(6px, 0.9vw, 10px);
+  padding: 0 clamp(16px, 4.5%, 40px);
+}
+
+.tab {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+  margin-top: 0;
+  padding: 11px clamp(6px, 0.9vw, 12px) 15px;
+  border-radius: 12px 12px 0 0;
+  background: var(--groove);
+  border: 1px solid rgba(237, 235, 231, 0.08);
+  border-bottom: none;
+  box-shadow: var(--sink-tab);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: var(--ink);
+  transition: margin 320ms var(--ease), padding 320ms var(--ease), background 240ms ease,
+    border-color 240ms ease, color 240ms ease;
+}
+
+/*
+  The tab grows UPWARD on hover and its bottom edge stays flush against the
+  card. Translating it instead opens a visible gap underneath, so the height
+  change has to come from margin-top plus an equal padding-bottom.
+*/
+/*
+  :focus-visible, not :focus. These tabs are target="_blank" links, so a
+  mouse click leaves focus on the tab after the new browser tab opens — with
+  bare :focus it stays grown and accent-filled until you click elsewhere.
+  focus-visible still gives keyboard users the affordance, which is the point
+  of matching hover on focus in the first place.
+*/
+.tab:hover,
+.tab:focus-visible {
+  margin-top: -7px;
+  padding-bottom: 22px;
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.contact-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 2.4vh, 24px);
+  padding: clamp(20px, 2.6vw, 30px) clamp(18px, 2.4vw, 28px);
+  border-radius: 16px;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  box-shadow: var(--lift-plate);
+}
+
+.contact-intro {
+  font-size: clamp(15px, 1.7vw, 22px);
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+}
+
+.email-chip {
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border-radius: 11px;
+  background: var(--groove);
+  border: 1px solid var(--edge);
+  box-shadow: var(--sink-groove);
+  transition: border-color 520ms ease, box-shadow 520ms ease;
+}
+
+.email-chip.is-flashing {
+  border-color: var(--accent);
+  box-shadow: var(--sink-groove), 0 0 0 3px rgba(198, 70, 47, 0.16);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.email {
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.copy-btn {
+  flex-shrink: 0;
+  overflow: hidden;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.copy-label {
+  display: block;
+  color: var(--ink3);
+  transition: color 200ms ease;
+}
+
+.copy-label.is-copied {
+  color: var(--accent);
+}
+
+.contact-place {
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+/* ---------- loader ---------- */
+
+/*
+  Everything below is gated on the `js` class, which main.tsx sets before
+  React renders. The pages ship as prerendered HTML, so without that gate a
+  reader with JS disabled or still loading would get a permanent loader
+  overlay and an invisible hero — the content is in the markup either way,
+  but it would not be on screen.
+*/
+.loader {
+  display: none;
+}
+
+.js .loader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 420ms ease 120ms;
+  display: flex;
+}
+
+.loader.is-clearing {
+  opacity: 0;
+}
+
+.loader-card {
+  width: min(76vw, 380px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 3vh, 30px);
+  padding: clamp(24px, 3.6vw, 38px);
+  border-radius: 20px;
+  background: var(--plate);
+  border: 1px solid var(--edge);
+  box-shadow: inset 0 1px 0 rgba(237, 235, 231, 0.05), 0 40px 80px -34px rgba(0, 0, 0, 0.95);
+  will-change: transform;
+  /* dealt in from above */
+  opacity: 0;
+  transform: translate(0, -88vh) rotate(-7deg);
+}
+
+.loader-card.is-dealt {
+  opacity: 1;
+  transform: none;
+  transition: transform 940ms cubic-bezier(0.2, 1.18, 0.32, 1), opacity 380ms ease;
+}
+
+/* and flung off to the left when the count lands */
+.loader-card.is-spent {
+  opacity: 0;
+  transform: translate(-120vw, -10vh) rotate(-18deg);
+  transition: transform 760ms cubic-bezier(0.55, 0, 0.7, 0.2), opacity 420ms ease 300ms;
+}
+
+.loader-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.loader-count {
+  font-family: var(--font-mono);
+  font-size: clamp(44px, 9vw, 86px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.loader-track {
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(237, 235, 231, 0.1);
+  overflow: hidden;
+}
+
+.loader-bar {
+  height: 100%;
+  background: var(--accent);
+}
+
+/* ---------- hero deal ---------- */
+
+/* Two blocks landing in sequence, like cards dealt onto a table. */
+.js .hero-word {
+  opacity: 0;
+}
+
+.hero-word[data-deal="0"] {
+  transform: translate(-60vw, -22px) rotate(-8deg);
+}
+
+.hero-word[data-deal="1"] {
+  transform: translate(60vw, 22px) rotate(8deg);
+}
+
+.hero-stack.is-dealt .hero-word {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-stack.is-dealt .hero-word[data-deal="0"] {
+  transition: transform 1100ms cubic-bezier(0.2, 1.25, 0.35, 1), opacity 420ms ease;
+}
+
+.hero-stack.is-dealt .hero-word[data-deal="1"] {
+  transition: transform 1100ms cubic-bezier(0.2, 1.25, 0.35, 1) 170ms, opacity 420ms ease 170ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word {
+    opacity: 1;
+    transform: none !important;
+  }
+}
+
+/* ---------- cursor + hero knockout blob ---------- */
+
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid var(--ink2);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 320;
+  opacity: 0;
+  transition: width 240ms ease, height 240ms ease, margin 240ms ease, border-color 240ms ease,
+    opacity 300ms ease;
+}
+
+.cursor-ring.is-hot {
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  border-color: var(--accent);
+}
+
+.cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--ink);
+  pointer-events: none;
+  z-index: var(--z-cursor);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.cursor-dot.is-up,
+.cursor-ring.is-up {
+  opacity: 1;
+}
+
+/*
+  The blob is an accent-filled amoeba with a copy of the hero and the header
+  drawn inside it in the page's background colour — a knockout, not an overlay.
+  Its eight radii wobble on independent periods so it never resolves to an
+  ellipse.
+*/
+.knock {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: var(--accent);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: var(--z-knock);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.knock.is-up {
+  opacity: 1;
+}
+
+/*
+  The copy's left/top are written every frame from the source's rect, so they
+  must stay under inline control. Only right/bottom get neutralised here —
+  they come from .site-header's `inset: 0 0 auto 0` and would stretch the
+  copy across the blob. Never reset `inset` as a shorthand: !important in a
+  stylesheet outranks an inline style, so it would silently discard the
+  positioning this whole effect depends on.
+*/
+.knock-mirror {
+  position: absolute !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  pointer-events: none;
+}
+
+.knock-mirror,
+.knock-mirror * {
+  color: var(--bg) !important;
+  border-color: var(--bg) !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* thin type loses weight when knocked out, so it gets a step back */
+.knock-mirror .role,
+.knock-mirror .wordmark,
+.knock-mirror .roll-label,
+.knock-mirror .roll-digit {
+  font-weight: 500;
+}

@@ -1,10 +1,31 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./styles/global.css";
 
+/*
+  Both pages decide their own starting scroll — the home page opens on the
+  hero and deals the name in, the case study opens on its title. Leaving
+  restoration on "auto" lets the browser drop a reload back into whatever
+  section was last on screen, which lands mid-narrative and skips the intro.
+*/
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
+/*
+  Marks that JS is running, before the first render. The CSS uses it to gate
+  every state that starts hidden and needs JS to reveal it — the loader, the
+  hero deal, the case-study section entrances. Without it, the prerendered
+  HTML would render blank for anyone whose JS has not arrived.
+*/
+document.documentElement.classList.add("js");
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 );
