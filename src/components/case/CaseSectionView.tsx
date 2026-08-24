@@ -19,6 +19,7 @@ export default function CaseSectionView({
       className={`case-section case-enter${shown ? " is-shown" : ""}`}
       id={id}
       data-sec={id}
+      data-enter={id}
     >
       <div className="case-section-inner">
         <div className="case-heading">

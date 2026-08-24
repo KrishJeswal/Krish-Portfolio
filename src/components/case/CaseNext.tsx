@@ -5,7 +5,7 @@ export default function CaseNext({ project, shown }: { project: Project; shown: 
   const next = nextProject(project.slug);
 
   return (
-    <section className={`case-next case-enter${shown ? " is-shown" : ""}`} data-sec="next">
+    <section className={`case-next case-enter${shown ? " is-shown" : ""}`} data-sec="next" data-enter="next">
       <a
         className="next-card next-card--source"
         href={project.repo}

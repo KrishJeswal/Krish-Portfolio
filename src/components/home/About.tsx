@@ -1,18 +1,21 @@
+import { useState } from "react";
 import { reelPanels, roles } from "../../data/home";
 
 /**
  * A 16:9 plate holding a horizontal tape of three panels. The tape slides one
  * panel width per index, so the plate reads as a window onto a strip of film.
  */
-export default function About({ index }: { index: number }) {
+export default function About() {
+  const [index, setIndex] = useState(0);
+
   return (
     <section className="panel panel--centred" id="about" aria-label="About">
       <span className="eyebrow">02 &nbsp;/&nbsp; About</span>
       <div className="reel">
         <div className="reel-panel">
           <div className="reel-tape" style={{ transform: `translateX(${-index * 100}%)` }}>
-            {reelPanels.map((panel) => (
-              <div className="reel-slide" key={panel.number}>
+            {reelPanels.map((panel, i) => (
+              <div className="reel-slide" key={panel.number} aria-hidden={i !== index}>
                 <span className="reel-eyebrow">
                   {panel.number} &nbsp;{panel.channel}
                 </span>
@@ -34,7 +37,14 @@ export default function About({ index }: { index: number }) {
         <div className="reel-buttons" role="tablist" aria-label="Discipline">
           {/* the buttons carry the hero's role casing, the headings their own */}
           {roles.map((role, i) => (
-            <button type="button" role="tab" className="reel-btn" key={role} aria-selected={i === index}>
+            <button
+              type="button"
+              role="tab"
+              className="reel-btn"
+              key={role}
+              aria-selected={i === index}
+              onClick={() => setIndex(i)}
+            >
               {role}
             </button>
           ))}

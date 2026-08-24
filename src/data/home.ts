@@ -15,19 +15,20 @@ export const roles = [
   "Embedded Systems Engineer",
 ] as const;
 
+/**
+ * `label` is what the nav roll reads out; `eyebrow` is the section's own
+ * heading. Work is the one place they differ.
+ */
 export const sections = [
-  { id: "hero", number: "01", label: "Hero" },
-  { id: "about", number: "02", label: "About" },
-  { id: "work", number: "03", label: "Selected work" },
-  { id: "skills", number: "04", label: "Skills" },
-  { id: "experience", number: "05", label: "Experience" },
-  { id: "contact", number: "06", label: "Contact" },
+  { id: "hero", number: "01", label: "Home", eyebrow: "Hero" },
+  { id: "about", number: "02", label: "About", eyebrow: "About" },
+  { id: "work", number: "03", label: "Work", eyebrow: "Selected work" },
+  { id: "skills", number: "04", label: "Skills", eyebrow: "Skills" },
+  { id: "experience", number: "05", label: "Experience", eyebrow: "Experience" },
+  { id: "contact", number: "06", label: "Contact", eyebrow: "Contact" },
 ] as const;
 
 export type SectionId = (typeof sections)[number]["id"];
-
-/** The nav label reads "Home" while the hero is up, then the section name. */
-export const NAV_HOME_LABEL = "Home";
 
 /* ---------- about reel ---------- */
 

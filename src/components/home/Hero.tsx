@@ -3,13 +3,13 @@ import { roles } from "../../data/home";
 
 const WORDS = ["KRISH", "JESWAL"] as const;
 
-export default function Hero() {
+export default function Hero({ play }: { play: boolean }) {
   return (
     <section className="panel panel--centred" id="hero" aria-label="Hero">
-      <div className="hero-stack" data-knock-host>
+      <div className={`hero-stack${play ? " is-dealt" : ""}`} data-knock-host>
         <h1 className="hero-name">
-          {WORDS.map((word) => (
-            <span className="hero-word" key={word}>
+          {WORDS.map((word, i) => (
+            <span className="hero-word" data-deal={i} key={word}>
               {word}
             </span>
           ))}
