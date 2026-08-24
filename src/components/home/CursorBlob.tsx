@@ -81,6 +81,11 @@ export default function CursorBlob({
     let clock = 0;
     let over = false;
 
+    const showPointer = (visible: boolean) => {
+      dot.classList.toggle("is-up", visible);
+      ring.classList.toggle("is-up", visible);
+    };
+
     const setOver = (next: boolean) => {
       if (next === over) return;
       over = next;
@@ -90,8 +95,7 @@ export default function CursorBlob({
         ky = my;
       }
       knock.classList.toggle("is-up", over);
-      dot.classList.toggle("is-up", !over);
-      ring.classList.toggle("is-up", !over);
+      showPointer(!over);
     };
 
     const onMove = (e: PointerEvent) => {
@@ -107,6 +111,11 @@ export default function CursorBlob({
       setOver(inside);
 
       if (!over) {
+        // Unconditional, not folded into setOver: the native cursor is hidden
+        // from mount, and setOver short-circuits when nothing changed — so if
+        // the pointer's first move is outside the hero (the common case),
+        // gating this on a state change leaves the page with no pointer at all.
+        showPointer(true);
         const target = e.target;
         const hot = target instanceof Element && target.closest(HOT) !== null;
         ring.classList.toggle("is-hot", hot);
@@ -115,11 +124,21 @@ export default function CursorBlob({
 
     const drop = () => setOver(false);
 
-    const blobSize = (): number => {
+    // Sized off the headline so the blob scales with the type. Measured on
+    // setup and on resize rather than per frame — getComputedStyle in a rAF
+    // loop forces a style recalc on every tick, and the answer only changes
+    // when the viewport does.
+    let radiusPx = 0;
+    const sizeBlob = () => {
       const word = sizeRef.current?.querySelector(".hero-word");
       const fontSize = word ? parseFloat(getComputedStyle(word).fontSize) : 90;
-      return Math.max(BLOB_MIN, Math.min(BLOB_MAX, (fontSize || 90) * 1.32));
+      const size = Math.max(BLOB_MIN, Math.min(BLOB_MAX, (fontSize || 90) * 1.32));
+      radiusPx = size / 2;
+      knock.style.width = `${size}px`;
+      knock.style.height = `${size}px`;
+      knock.style.margin = `${-radiusPx}px 0 0 ${-radiusPx}px`;
     };
+    sizeBlob();
 
     // Eight radii — four horizontal, four vertical — each summing two sine
     // waves on incommensurate periods, plus a speed term that stretches the
@@ -150,11 +169,7 @@ export default function CursorBlob({
         ky += vy * BLOB_LERP;
         const speed = Math.min(1, Math.hypot(vx, vy) / SPEED_CAP);
 
-        const size = blobSize();
-        const r = size / 2;
-        knock.style.width = `${size}px`;
-        knock.style.height = `${size}px`;
-        knock.style.margin = `${-r}px 0 0 ${-r}px`;
+        const r = radiusPx;
         knock.style.transform = `translate(${kx}px,${ky}px)`;
         knock.style.borderRadius = [
           radius(1.0, 0.0, 2.3, 1.1, speed),
@@ -186,6 +201,7 @@ export default function CursorBlob({
     };
     frame = requestAnimationFrame(loop);
 
+    window.addEventListener("resize", sizeBlob);
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("scroll", drop, { passive: true });
     window.addEventListener("blur", drop);
@@ -193,6 +209,7 @@ export default function CursorBlob({
 
     return () => {
       cancelAnimationFrame(frame);
+      window.removeEventListener("resize", sizeBlob);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("scroll", drop);
       window.removeEventListener("blur", drop);
