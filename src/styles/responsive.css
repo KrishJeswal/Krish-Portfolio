@@ -1,0 +1,133 @@
+/* ============================================================
+   RESPONSIVE — three breakpoints, all of them deliberate
+   1200px  case-study rail → bottom sheet
+    860px  home unsticks, skill grid 4→2, about drops its ratio
+    720px  experience rows stack, all four at once
+   ============================================================ */
+
+/* ---------- 1200px: rail becomes a bottom sheet ---------- */
+
+@media (max-width: 1200px) {
+  .case-shell {
+    padding: 0 clamp(24px, 6vw, 40px);
+    max-width: 100vw;
+  }
+
+  .case-counter {
+    display: none;
+  }
+
+  .case-pill {
+    display: inline-flex;
+  }
+
+  .rail {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    z-index: var(--z-sheet);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    padding: 10px clamp(16px, 5vw, 26px) calc(14px + env(safe-area-inset-bottom));
+    background: var(--sheet);
+    border-top: 1px solid var(--edge);
+    box-shadow: 0 -22px 44px -30px rgba(0, 0, 0, 0.95);
+    max-height: 62vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 420ms var(--ease);
+  }
+
+  .rail.is-open {
+    transform: translateY(0);
+  }
+
+  .rail-link {
+    padding: 11px 2px;
+    font-size: 13px;
+  }
+
+  .rail-tick {
+    display: none;
+  }
+
+  .case-scrim.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* ---------- 860px: the home page stops being a stack of panels ---------- */
+
+@media (max-width: 860px) {
+  /*
+    Sticky full-height panels with overflow:hidden clip their own content on a
+    phone — there is no room for a 100dvh panel to also hold a 16:9 plate and
+    a button row. Below this width the panels become ordinary blocks that grow
+    with their content.
+  */
+  .panel {
+    position: static;
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .drawer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* the reel plate can't crop, so it gives up its ratio and sizes to content */
+  .reel-panel {
+    aspect-ratio: auto;
+    height: auto;
+    max-width: 100%;
+  }
+
+  .reel-tape {
+    height: auto;
+  }
+
+  .reel-slide {
+    padding: clamp(20px, 6vw, 30px) clamp(18px, 5vw, 26px);
+  }
+}
+
+/* ---------- 720px: the ledger rows stack ---------- */
+
+@media (max-width: 720px) {
+  /*
+    All four rows switch together, as a breakpoint. Letting them flex-wrap
+    individually would break them at four different widths — each row's text is
+    a different length — and the column of rows would lose its alignment.
+  */
+  .ledger-row {
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ledger-role {
+    white-space: normal;
+  }
+
+  .block-meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-title {
+    white-space: normal;
+  }
+
+  .dg-row[data-columns="2"],
+  .dg-row[data-columns="3"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .next-card {
+    gap: 14px;
+  }
+}
