@@ -1,29 +1,24 @@
+import type { RefObject } from "react";
 import { sections } from "../../data/home";
 import { useRollTape } from "../../lib/useHomeScroll";
 import { useReducedMotion } from "../../lib/env";
 
 /**
- * Fixed top bar. The right side is a single roll window: a tape of all six
- * numerals behind a 44×34 aperture, with the current section's label beside it.
+ * The bar's contents, separate from the fixed bar itself so the cursor blob
+ * can render a second copy knocked out in the background colour.
  */
-export default function SiteHeader({
-  active,
-  onHome,
-}: {
-  active: number;
-  onHome: () => void;
-}) {
+export function HeaderContent({ active, onHome }: { active: number; onHome?: () => void }) {
   const reduced = useReducedMotion();
   const tape = useRollTape(active, reduced);
 
   return (
-    <header className="site-header">
+    <>
       <a
         className="wordmark"
         href="#hero"
         onClick={(e) => {
           e.preventDefault();
-          onHome();
+          onHome?.();
         }}
       >
         Krish&nbsp;Jeswal
@@ -31,6 +26,8 @@ export default function SiteHeader({
       <nav className="roll" aria-label="Current section">
         <span className="roll-label">{sections[active].label}</span>
         <div className="roll-window">
+          {/* the tape carries all six numerals; changing section rolls the
+              digit into the aperture rather than swapping it */}
           <div
             className="roll-tape"
             style={{
@@ -47,6 +44,22 @@ export default function SiteHeader({
           </div>
         </div>
       </nav>
+    </>
+  );
+}
+
+export default function SiteHeader({
+  active,
+  onHome,
+  elRef,
+}: {
+  active: number;
+  onHome: () => void;
+  elRef: RefObject<HTMLElement | null>;
+}) {
+  return (
+    <header className="site-header" ref={elRef}>
+      <HeaderContent active={active} onHome={onHome} />
     </header>
   );
 }

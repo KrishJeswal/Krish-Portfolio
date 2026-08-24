@@ -986,3 +986,93 @@
     transform: none !important;
   }
 }
+
+/* ---------- cursor + hero knockout blob ---------- */
+
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid var(--ink2);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 320;
+  opacity: 0;
+  transition: width 240ms ease, height 240ms ease, margin 240ms ease, border-color 240ms ease,
+    opacity 300ms ease;
+}
+
+.cursor-ring.is-hot {
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  border-color: var(--accent);
+}
+
+.cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--ink);
+  pointer-events: none;
+  z-index: var(--z-cursor);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.cursor-dot.is-up,
+.cursor-ring.is-up {
+  opacity: 1;
+}
+
+/*
+  The blob is an accent-filled amoeba with a copy of the hero and the header
+  drawn inside it in the page's background colour — a knockout, not an overlay.
+  Its eight radii wobble on independent periods so it never resolves to an
+  ellipse.
+*/
+.knock {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: var(--accent);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: var(--z-knock);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.knock.is-up {
+  opacity: 1;
+}
+
+.knock-mirror {
+  position: absolute !important;
+  inset: auto !important;
+  margin: 0 !important;
+  pointer-events: none;
+}
+
+.knock-mirror,
+.knock-mirror * {
+  color: var(--bg) !important;
+  border-color: var(--bg) !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* thin type loses weight when knocked out, so it gets a step back */
+.knock-mirror .role,
+.knock-mirror .wordmark,
+.knock-mirror .roll-label,
+.knock-mirror .roll-digit {
+  font-weight: 500;
+}
