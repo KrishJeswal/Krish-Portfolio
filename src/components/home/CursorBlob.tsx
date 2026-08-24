@@ -3,8 +3,12 @@ import { useFinePointer, useReducedMotion } from "../../lib/env";
 
 /** How hard the blob chases the pointer each frame. */
 const BLOB_LERP = 0.28;
-const DOT_LERP = 0.4;
-const RING_LERP = 0.11;
+/**
+ * Dot and ring share one position, so the ring is always concentric with the
+ * dot rather than trailing it. Two different follow rates would put the dot
+ * off-centre inside the ring whenever the pointer moved quickly.
+ */
+const CURSOR_LERP = 0.4;
 /** Wobble clock advance per frame. */
 const WOBBLE_STEP = 0.042;
 /** Pointer speed at which the blob's stretch tops out. */
@@ -72,10 +76,8 @@ export default function CursorBlob({
     // pointer, then the three things chasing it at their own rates
     let mx = half.x;
     let my = half.y;
-    let dx = mx;
-    let dy = my;
-    let rx = mx;
-    let ry = my;
+    let cx = mx;
+    let cy = my;
     let kx = mx;
     let ky = my;
     let clock = 0;
@@ -152,12 +154,11 @@ export default function CursorBlob({
 
     let frame = 0;
     const loop = () => {
-      dx += (mx - dx) * DOT_LERP;
-      dy += (my - dy) * DOT_LERP;
-      rx += (mx - rx) * RING_LERP;
-      ry += (my - ry) * RING_LERP;
-      dot.style.transform = `translate(${dx}px,${dy}px)`;
-      ring.style.transform = `translate(${rx}px,${ry}px)`;
+      cx += (mx - cx) * CURSOR_LERP;
+      cy += (my - cy) * CURSOR_LERP;
+      const at = `translate(${cx}px,${cy}px)`;
+      dot.style.transform = at;
+      ring.style.transform = at;
 
       if (over) {
         clock += WOBBLE_STEP;
