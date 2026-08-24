@@ -92,7 +92,7 @@ export function metaForPath(pathname: string): PageMeta {
 
   return {
     path: "/",
-    title: `${profile.name} — ML Researcher, Full-Stack & Embedded Engineer`,
+    title: profile.name,
     description: HOME_DESCRIPTION,
     canonical: SITE_URL,
     ogType: "website",
