@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { sections } from "../data/home";
 import { useIsUnstuck, useReducedMotion } from "../lib/env";
 import { useActiveSection, usePanelDepth } from "../lib/useHomeScroll";
@@ -24,6 +24,15 @@ export default function Home() {
 
   const active = useActiveSection(mainRef, sections.length);
   usePanelDepth(mainRef, !unstuck && !reduced);
+
+  // The home page always opens on the hero. Router navigation keeps the
+  // outgoing page's scroll position, so arriving from a case study would
+  // otherwise drop you level with whatever section matched that offset.
+  // Layout effect, not effect: this runs before paint, so there is no frame
+  // showing the wrong section.
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
 
   const goHome = () => window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
 
