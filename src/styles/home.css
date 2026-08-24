@@ -595,9 +595,12 @@
 }
 
 .drawer-body {
+  overflow: hidden;
+}
+
+.js .drawer-body {
   max-height: 0;
   opacity: 0;
-  overflow: hidden;
   transition: max-height 560ms var(--ease), opacity 400ms ease;
 }
 
@@ -917,7 +920,18 @@
 
 /* ---------- loader ---------- */
 
+/*
+  Everything below is gated on the `js` class, which main.tsx sets before
+  React renders. The pages ship as prerendered HTML, so without that gate a
+  reader with JS disabled or still loading would get a permanent loader
+  overlay and an invisible hero — the content is in the markup either way,
+  but it would not be on screen.
+*/
 .loader {
+  display: none;
+}
+
+.js .loader {
   position: fixed;
   inset: 0;
   z-index: var(--z-loader);
@@ -927,6 +941,7 @@
   justify-content: center;
   overflow: hidden;
   transition: opacity 420ms ease 120ms;
+  display: flex;
 }
 
 .loader.is-clearing {
@@ -993,7 +1008,7 @@
 /* ---------- hero deal ---------- */
 
 /* Two blocks landing in sequence, like cards dealt onto a table. */
-.hero-word {
+.js .hero-word {
   opacity: 0;
 }
 

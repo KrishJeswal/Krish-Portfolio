@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 
 /**
- * Subscribes to a media query. Returns false during SSR-less first paint only
- * if the query genuinely doesn't match — the initial read is synchronous.
+ * Subscribes to a media query.
+ *
+ * Always starts false and resolves in an effect, rather than reading
+ * matchMedia during render. The pages are prerendered to static HTML at build
+ * time, where there is no window at all — and even in the browser, reading the
+ * real value on the first render would disagree with the prerendered markup
+ * and trip a hydration mismatch. One extra tick is cheaper than that.
  */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+  const [matches, setMatches] = useState(false);
 
   useEffect(() => {
     const mql = window.matchMedia(query);

@@ -40,14 +40,6 @@ export default function CaseStudy() {
 
   const project = valid ? projectBySlug(slug) : null;
 
-  useEffect(() => {
-    if (!project) return;
-    document.title = `${project.name} — Krish Jeswal`;
-    return () => {
-      document.title = "Krish Jeswal";
-    };
-  }, [project]);
-
   // A new project is a new read — start it at the top.
   useEffect(() => {
     if (project) window.scrollTo({ top: 0, behavior: "auto" });

@@ -14,6 +14,14 @@ if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
 }
 
+/*
+  Marks that JS is running, before the first render. The CSS uses it to gate
+  every state that starts hidden and needs JS to reveal it — the loader, the
+  hero deal, the case-study section entrances. Without it, the prerendered
+  HTML would render blank for anyone whose JS has not arrived.
+*/
+document.documentElement.classList.add("js");
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>

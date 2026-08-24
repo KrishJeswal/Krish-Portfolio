@@ -207,7 +207,8 @@
   }
 }
 
-.case-enter {
+/* only hide sections for their entrance if JS is there to reveal them */
+.js .case-enter {
   opacity: 0;
 }
 

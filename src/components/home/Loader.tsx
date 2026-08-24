@@ -18,13 +18,14 @@ export default function Loader({ onDone }: { onDone: () => void }) {
   const [count, setCount] = useState(0);
   const [dealt, setDealt] = useState(false);
   const [spent, setSpent] = useState(false);
-  const [gone, setGone] = useState(reduced);
+  const [gone, setGone] = useState(false);
 
   const done = useRef(onDone);
   done.current = onDone;
 
   useEffect(() => {
     if (reduced) {
+      setGone(true);
       done.current();
       return;
     }
