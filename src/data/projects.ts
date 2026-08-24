@@ -22,6 +22,11 @@ export type DiagramNode = {
   readonly lines: readonly string[];
   /** Key nodes in the flow take an accent border. */
   readonly accent?: true;
+  /**
+   * Somewhere data comes to rest — a database, a registry, a path on disk.
+   * Drawn as a pill so stores read differently from the steps between them.
+   */
+  readonly store?: true;
 };
 
 export type DiagramItem =
@@ -195,10 +200,11 @@ const ciphertrace: Project = {
                 kind: "row",
                 columns: 1,
                 nodes: [
-                  { lines: ["artifacts/ingested/", "X_prof.npy"] },
-                  { lines: ["artifacts/transformed/", "X_prof_<tag>.npy"] },
+                  { lines: ["artifacts/ingested/", "X_prof.npy"], store: true },
+                  { lines: ["artifacts/transformed/", "X_prof_<tag>.npy"], store: true },
                   {
                     lines: ["artifacts/models/", "<model>_<tag>.joblib", "transformer_<tag>.joblib"],
+                    store: true,
                   },
                 ],
               },
@@ -401,9 +407,14 @@ const lorerecall: Project = {
             ],
           },
           { kind: "link", label: "batch 20 min crawl" },
-          { kind: "node", lines: ["MongoDB Atlas M0", "Vector Search + BM25"], accent: true },
+          {
+            kind: "node",
+            lines: ["MongoDB Atlas M0", "Vector Search + BM25"],
+            accent: true,
+            store: true,
+          },
           { kind: "link", label: "monthly fine-tune", dashed: true },
-          { kind: "node", lines: ["Ollama model registry"] },
+          { kind: "node", lines: ["Ollama model registry"], store: true },
           { kind: "link", label: "2 s query" },
           {
             kind: "group",
@@ -556,19 +567,13 @@ const glyphmark: Project = {
             items: [
               {
                 kind: "row",
-                columns: 2,
+                columns: 1,
                 nodes: [
                   { lines: ["telegramMessageOptionsSchema", "{chatId, message, botToken}"] },
                   {
                     lines: ["telegramMessageInputSchema", "{chatId, message}", "— no credential"],
                     accent: true,
                   },
-                ],
-              },
-              {
-                kind: "row",
-                columns: 1,
-                nodes: [
                   {
                     lines: [
                       "imports no adapter code",

@@ -83,6 +83,9 @@ export default function CaseStudy() {
 
   return (
     <div className="case">
+      <a className="skip-link" href="#top">
+        Skip to content
+      </a>
       <CaseHeader
         counter={counter}
         pillLabel={pillLabel}

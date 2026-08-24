@@ -4,15 +4,10 @@ import CaseStudy from "./pages/CaseStudy";
 
 export default function App() {
   return (
-    <>
-      <a className="skip-link" href="#hero">
-        Skip to content
-      </a>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/work/:slug" element={<CaseStudy />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/work/:slug" element={<CaseStudy />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

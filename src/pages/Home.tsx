@@ -37,6 +37,9 @@ export default function Home() {
 
   return (
     <>
+      <a className="skip-link" href="#hero">
+        Skip to content
+      </a>
       <Loader onDone={() => setLoaded(true)} />
       <CursorBlob hostRef={heroSectionRef} sizeRef={heroContentRef} mirrors={mirrors} />
       <SiteHeader active={active} onHome={goHome} elRef={headerRef} />

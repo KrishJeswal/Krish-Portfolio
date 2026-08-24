@@ -541,8 +541,8 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-/* a stacked run of alternatives reads as one pill-shaped list */
-.dg-row[data-columns="1"] .dg-node {
+/* a store is a pill — data at rest, not a step on the way */
+.dg-node.is-store {
   border-radius: 22px;
 }
 

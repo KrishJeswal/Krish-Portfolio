@@ -2,7 +2,7 @@ import type { DiagramItem, DiagramNode } from "../../data/projects";
 
 function Node({ node }: { node: DiagramNode }) {
   return (
-    <div className={`dg-node${node.accent ? " is-key" : ""}`}>
+    <div className={`dg-node${node.accent ? " is-key" : ""}${node.store ? " is-store" : ""}`}>
       {node.lines.map((line, i) => (
         <span key={i}>{line}</span>
       ))}

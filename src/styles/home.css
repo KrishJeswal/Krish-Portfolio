@@ -785,7 +785,7 @@
   change has to come from margin-top plus an equal padding-bottom.
 */
 .tab:hover,
-.tab:focus-visible {
+.tab:focus {
   margin-top: -7px;
   padding-bottom: 22px;
   background: var(--accent);
