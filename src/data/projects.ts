@@ -673,7 +673,7 @@ const glyphmark: Project = {
       {
         kind: "note",
         label: "The 401 is load-bearing",
-        text: "A missing or invalid bearer token returns 401 with a `WWW-Authenticate: Bearer resource_metadata=“…”` header pointing at the protected-resource metadata route. That isn’t decoration — it’s the exact handshake MCP OAuth clients follow to discover the login flow, so getting the header shape right is the difference between a client that can self-register and one that just fails.",
+        text: "A missing or invalid bearer token returns 401 with a `WWW-Authenticate: Bearer resource_metadata=\"…\"` header pointing at the protected-resource metadata route. That isn’t decoration — it’s the exact handshake MCP OAuth clients follow to discover the login flow, so getting the header shape right is the difference between a client that can self-register and one that just fails.",
       },
       {
         kind: "body",

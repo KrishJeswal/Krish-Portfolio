@@ -78,7 +78,12 @@ export default function CaseStudy() {
 
   const goTo = (id: CaseSectionId) => {
     setSheetOpen(false);
-    scrollToId(id);
+    // The header is fixed and opaque at the top, so land the heading below it
+    // rather than underneath it. window.scrollTo ignores scroll-margin-top,
+    // which is why the offset is measured rather than declared in CSS.
+    const header = document.querySelector(".case-header");
+    const clearance = header ? header.getBoundingClientRect().height : 0;
+    scrollToId(id, clearance);
   };
 
   return (
