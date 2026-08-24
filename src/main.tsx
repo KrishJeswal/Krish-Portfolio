@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./styles/global.css";
@@ -22,10 +22,25 @@ if ("scrollRestoration" in history) {
 */
 document.documentElement.classList.add("js");
 
-createRoot(document.getElementById("root")!).render(
+const container = document.getElementById("root")!;
+
+const tree = (
   <StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
   </StrictMode>
 );
+
+/*
+  The build prerenders every route, so in production #root already holds the
+  full markup and must be hydrated — calling createRoot().render() on it
+  throws that markup away and rebuilds from scratch, which wastes the
+  prerender and flashes. `npm run dev` serves an empty shell, hence the
+  branch rather than hydrateRoot unconditionally.
+*/
+if (container.hasChildNodes()) {
+  hydrateRoot(container, tree);
+} else {
+  createRoot(container).render(tree);
+}

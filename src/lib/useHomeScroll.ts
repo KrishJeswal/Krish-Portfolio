@@ -19,9 +19,21 @@ export function useActiveSection(ref: RefObject<HTMLElement | null>, count: numb
       frame = 0;
       const panels = Array.from(root.querySelectorAll<HTMLElement>(".panel"));
       const line = window.scrollY + window.innerHeight * 0.5;
+
+      /*
+        Accumulate offsetHeight rather than reading each panel's offsetTop.
+        On a sticky element offsetTop reports where it is *currently pinned*,
+        not where it sits in the document — while stuck at top:0 every one of
+        them returns the same value (the current scrollY), which makes them
+        indistinguishable. offsetHeight is unaffected by stickiness, so
+        summing it walks the true flow position. Works unchanged below 860px
+        where the panels are static and their heights vary.
+      */
+      let flowTop = root.offsetTop;
       let next = 0;
       panels.forEach((panel, i) => {
-        if (panel.offsetTop <= line) next = i;
+        if (flowTop <= line) next = i;
+        flowTop += panel.offsetHeight;
       });
       setActive(Math.min(next, count - 1));
     };
