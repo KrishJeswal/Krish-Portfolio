@@ -136,7 +136,6 @@ export default function CursorBlob({
       radiusPx = size / 2;
       knock.style.width = `${size}px`;
       knock.style.height = `${size}px`;
-      knock.style.margin = `${-radiusPx}px 0 0 ${-radiusPx}px`;
     };
     sizeBlob();
 
@@ -169,8 +168,11 @@ export default function CursorBlob({
         ky += vy * BLOB_LERP;
         const speed = Math.min(1, Math.hypot(vx, vy) / SPEED_CAP);
 
+        // Centre on the pointer here rather than with a negative margin, so
+        // the blob's top-left is exactly (kx - r, ky - r) — which is the
+        // origin the mirror positioning below is measured against.
         const r = radiusPx;
-        knock.style.transform = `translate(${kx}px,${ky}px)`;
+        knock.style.transform = `translate(${kx - r}px,${ky - r}px)`;
         knock.style.borderRadius = [
           radius(1.0, 0.0, 2.3, 1.1, speed),
           radius(0.83, 2.2, 1.91, 4.0, speed),

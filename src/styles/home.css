@@ -1085,9 +1085,18 @@
   opacity: 1;
 }
 
+/*
+  The copy's left/top are written every frame from the source's rect, so they
+  must stay under inline control. Only right/bottom get neutralised here —
+  they come from .site-header's `inset: 0 0 auto 0` and would stretch the
+  copy across the blob. Never reset `inset` as a shorthand: !important in a
+  stylesheet outranks an inline style, so it would silently discard the
+  positioning this whole effect depends on.
+*/
 .knock-mirror {
   position: absolute !important;
-  inset: auto !important;
+  right: auto !important;
+  bottom: auto !important;
   margin: 0 !important;
   pointer-events: none;
 }
