@@ -121,6 +121,15 @@ export default function Work({ active }: { active: boolean }) {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     // a link inside the card is a link, not a handle
     if ((e.target as Element).closest("a")) return;
+    /*
+      Only the card is the handle. The stage stretches the full height of the
+      panel so that the deck can be centred in it, which left a tall band of
+      empty space above and below the card — and a tap anywhere in that band
+      came through here, ended as a no-movement gesture, and advanced the
+      deck. The cards behind the front one carry pointer-events: none, so
+      this can only ever match the one on top.
+    */
+    if (!(e.target as Element).closest(".deck-card")) return;
 
     g.pointerId = e.pointerId;
     g.startX = e.clientX;
