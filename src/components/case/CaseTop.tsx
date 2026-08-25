@@ -7,7 +7,6 @@ export default function CaseTop({ project }: { project: Project }) {
         <span className="case-eyebrow">
           {project.domain}&nbsp;&middot;&nbsp;{project.year}
         </span>
-        {}
         <h1 className="case-title" aria-label={project.name}>
           {[...project.name].map((letter, i) => (
             <span key={i} aria-hidden="true" style={{ animationDelay: `${i * 42}ms` }}>

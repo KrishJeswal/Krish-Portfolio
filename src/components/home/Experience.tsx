@@ -48,7 +48,6 @@ export default function Experience() {
           ))}
         </div>
 
-        {}
         <div className="ledger-details">
           {ledger.map((row, i) => (
             <p className={`ledger-detail${i === index ? " is-active" : ""}`} key={row.org}>

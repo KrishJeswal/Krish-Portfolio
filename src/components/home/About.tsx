@@ -32,7 +32,6 @@ export default function About() {
           </div>
         </div>
         <div className="reel-buttons" role="tablist" aria-label="Discipline">
-          {}
           {roles.map((role, i) => (
             <button
               type="button"

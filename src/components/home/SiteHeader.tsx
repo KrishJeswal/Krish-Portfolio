@@ -26,7 +26,6 @@ export function HeaderContent({ active, onHome }: { active: number; onHome?: () 
       <nav className="roll" aria-label="Current section">
         <span className="roll-label">{sections[active].label}</span>
         <div className="roll-window">
-          {}
           <div
             className="roll-tape"
             style={{
