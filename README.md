@@ -121,7 +121,7 @@ src/
     ├── tokens.css           colour, type, elevation and z-index scales
     ├── home.css             the six panels and everything on them
     ├── case-study.css       the long-form read and its rail
-    ├── responsive.css       three breakpoints, all deliberate
+    ├── responsive.css       four breakpoints, all deliberate
     └── global.css           imports the above in order
 
 scripts/
@@ -141,13 +141,14 @@ All tokens live in `src/styles/tokens.css`.
 
 **Layering** — every z-index is a token, from `--z-rail: 60` up to `--z-skip: 500`. The only raw z-indexes left are the six panels, which climb 1 to 6 so each sticky sheet covers the one before it.
 
-**Breakpoints** — three, each with a reason:
+**Breakpoints** — four, each with a reason:
 
 | Width | What changes |
 | --- | --- |
 | 1200px | The case-study rail becomes a bottom sheet |
 | 860px | The home panels stop being sticky and grow with their content |
 | 720px | The experience rows stack, all four together |
+| 560px | Phone proportions — vh-driven padding and chrome resized; no structural change |
 
 ## Implementation notes
 
