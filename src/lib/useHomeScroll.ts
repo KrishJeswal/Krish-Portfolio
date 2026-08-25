@@ -18,6 +18,17 @@ export function useActiveSection(ref: RefObject<HTMLElement | null>, count: numb
     const read = () => {
       frame = 0;
       const panels = Array.from(root.querySelectorAll<HTMLElement>(".panel"));
+
+      /*
+        An unstyled panel measures zero, and a stack of zero-height panels all
+        sit above the spy line — which resolves to the *last* section rather
+        than the first, so the nav opens on Contact 06. Nothing scrolls
+        afterwards to correct it, so it would stay there for the whole visit.
+        Wait for real heights instead; the observer below fires the moment
+        they arrive.
+      */
+      if (panels.some((panel) => panel.offsetHeight === 0)) return;
+
       const line = window.scrollY + window.innerHeight * 0.5;
 
       /*
@@ -38,17 +49,28 @@ export function useActiveSection(ref: RefObject<HTMLElement | null>, count: numb
       setActive(Math.min(next, count - 1));
     };
 
-    const onScroll = () => {
+    const schedule = () => {
       if (frame === 0) frame = requestAnimationFrame(read);
     };
 
+    /*
+      The panels resize without either a scroll or a window resize — the
+      stylesheet arriving, a webfont swapping, the deck screenshot loading in.
+      Each of those moves the boundaries the spy line is measured against, and
+      the first of them is what turns the zero-height bail-out above into a
+      real reading.
+    */
+    const observer = new ResizeObserver(schedule);
+    observer.observe(root);
+
     read();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
     return () => {
       if (frame !== 0) cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      observer.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
     };
   }, [ref, count]);
 
