@@ -23,6 +23,17 @@ export function useScrollSpy(
     let frame = 0;
     const read = () => {
       frame = 0;
+
+      /*
+        Before the shell has been laid out every section reports offsetTop 0 —
+        measured at mount, all of them, with a null offsetParent. All zero
+        means all of them clear the line, and the loop keeps the last one that
+        does, so the rail opened on the closing section and stayed there for
+        the whole read. Skip the reading until there is a layout to measure;
+        the observer below retakes it once there is.
+      */
+      if (root.offsetHeight === 0) return;
+
       const line = window.scrollY + window.innerHeight * SPY_LINE;
       let next = ids[0];
       for (const id of ids) {
@@ -32,17 +43,24 @@ export function useScrollSpy(
       setActive(next);
     };
 
-    const onScroll = () => {
+    const schedule = () => {
       if (frame === 0) frame = requestAnimationFrame(read);
     };
 
+    // Sections move without a scroll or a window resize — the stylesheet
+    // arriving, a webfont swapping, a figure loading in — and each of those
+    // shifts the tops this spy line is compared against.
+    const observer = new ResizeObserver(schedule);
+    observer.observe(root);
+
     read();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
     return () => {
       if (frame !== 0) cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      observer.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
     };
   }, [ref, ids]);
 
