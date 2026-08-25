@@ -216,7 +216,10 @@
 /* ---------- top section ---------- */
 
 .case-top {
-  min-height: 100dvh;
+  /* svh for the same reason the home panels use it: dvh would restate this
+     block's height every time the phone's address bar moved, and everything
+     below it would shift under the reader. */
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -278,7 +281,7 @@
 /*
   The frame is the photo. Both dimensions stay auto so the element keeps the
   screenshot's own intrinsic ratio, and the two maxes bound it: the column
-  width on a narrow screen, 56dvh on a tall one. CSS scales a replaced element
+  width on a narrow screen, 56svh on a tall one. CSS scales a replaced element
   proportionally when it hits either, so the border never encloses anything
   but the image.
 
@@ -292,7 +295,7 @@
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: 56dvh;
+  max-height: 56svh;
   margin: 0 auto;
   flex-shrink: 0;
   object-fit: contain;

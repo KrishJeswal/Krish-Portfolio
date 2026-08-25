@@ -73,7 +73,15 @@
   .panel {
     position: static;
     height: auto;
-    min-height: 100dvh;
+    /*
+      svh, never dvh. dvh tracks the address bar, so a scroll long enough to
+      retract it grew all six panels at once — 56px of bar became 336px of
+      document, and since scrollY does not move with it the passage you were
+      reading slid 112px down the screen, which reads as the page jumping
+      back up. svh is the viewport with the bar showing and never changes,
+      so the document keeps still while the bar comes and goes.
+    */
+    min-height: 100svh;
     /*
       Vertically visible, horizontally clipped. The hero deal parks its two
       words at translate(±60vw) before it plays, and with the panel no longer
