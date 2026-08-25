@@ -944,7 +944,6 @@
   justify-content: center;
   overflow: hidden;
   transition: opacity 420ms ease 120ms;
-  display: flex;
 }
 
 .loader.is-clearing {
@@ -953,6 +952,15 @@
 
 .loader-card {
   width: min(76vw, 380px);
+  /*
+    A position:fixed overlay is as tall as the *large* viewport, so on a phone
+    it runs on behind the address bar and its centre sits below the middle of
+    what you can actually see. lvh - svh is exactly the height of that bar;
+    carrying it as bottom margin lifts the centred card back by half of it,
+    onto the visible centre. The two units are equal wherever there is no
+    retractable chrome, so this resolves to zero on a desktop.
+  */
+  margin-bottom: calc(100lvh - 100svh);
   display: flex;
   flex-direction: column;
   gap: clamp(18px, 3vh, 30px);

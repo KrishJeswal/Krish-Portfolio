@@ -74,7 +74,18 @@
     position: static;
     height: auto;
     min-height: 100dvh;
+    /*
+      Vertically visible, horizontally clipped. The hero deal parks its two
+      words at translate(±60vw) before it plays, and with the panel no longer
+      hiding its overflow those pushed the document out to 584px on a 375px
+      phone. A mobile browser widens the layout viewport to cover a document
+      that wide, and every position:fixed box — the loader, the header — then
+      centres against 584 rather than 375 and hangs off the right edge.
+      `clip` rather than `hidden` because hidden on one axis forces the other
+      to auto, and an auto panel would scroll its own content away.
+    */
     overflow: visible;
+    overflow-x: clip;
   }
 
   .drawer-grid {
