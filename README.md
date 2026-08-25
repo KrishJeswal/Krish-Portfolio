@@ -89,6 +89,7 @@ Both pages track scroll position with a `requestAnimationFrame`-coalesced listen
 
 - **Home** (`useActiveSection`) accumulates `offsetHeight` from the top of `<main>` rather than reading each panel's `offsetTop`. On a sticky element `offsetTop` reports where it is *currently pinned*, so while stuck every panel returns the same value and they become indistinguishable.
 - **Case study** (`useScrollSpy`) reads `offsetTop` directly, which is correct there because those sections are static and their entrance animation is a keyframe that layout ignores.
+- Both refuse a reading taken before there is any layout — every section measures zero then, which reads as the *last* section rather than the first — and both watch their root with a `ResizeObserver` so the reading is retaken once the panels have real heights.
 
 ## Project structure
 

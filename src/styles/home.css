@@ -5,6 +5,9 @@
 .panel {
   position: sticky;
   top: 0;
+  /* dvh here, svh below 860px where the panels unstick. There is no
+     retractable chrome at this width, and a pinned panel shorter than the
+     viewport would leave a strip of the next one showing under it. */
   height: 100dvh;
   overflow: hidden;
   background: var(--bg);
