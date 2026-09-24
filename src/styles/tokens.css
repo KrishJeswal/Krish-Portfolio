@@ -12,7 +12,8 @@
 
   --ink: #edebe7;
   --ink2: #94928f;
-  --ink3: #5a5957;
+  /* the darkest text that still clears 4.5:1 on --plate */
+  --ink3: #82807d;
 
   --line: rgba(237, 235, 231, 0.13); /* section top border */
   --edge: rgba(237, 235, 231, 0.09); /* plate border */

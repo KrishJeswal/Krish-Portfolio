@@ -37,6 +37,7 @@ pnpm-debug.log*
 *.tsbuildinfo
 
 PROJECT.md
+Memory.md
 
 # design references (local working artefact)
 design_handoff_portfolio/
