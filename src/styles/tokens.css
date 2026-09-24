@@ -85,8 +85,7 @@ p {
   font-weight: 400;
   letter-spacing: -0.005em;
   line-height: 1.6;
-  text-align: justify;
-  text-justify: inter-word;
+  text-align: start;
 }
 
 a {
