@@ -1052,11 +1052,13 @@
     overflow: hidden;
   }
   .pcard {
-    --w: calc(100vw - 2 * var(--gutter));
+    /* Card is ~49 --fs tall and starts ~215px down; cap by height so it fits a portrait tablet. */
+    --full: calc(100vw - 2 * var(--gutter));
+    --w: max(min(var(--full), (100svh - 215px) * 30 / 49), min(var(--full), 300px));
     --fs: calc(var(--w) / 30);
     --ml: 11%;
-    left: var(--gutter);
-    translate: none;
+    left: 50%;
+    translate: -50% 0;
     bottom: auto;
     top: 16px;
   }
