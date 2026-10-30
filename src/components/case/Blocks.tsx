@@ -83,8 +83,10 @@ function BlockView({ block }: { block: Block }): ReactElement | null {
               {block.rows.map((row) => (
                 <tr key={row[0]}>
                   {row.map((cell, i) => (
-                    <td key={i}>
-                      <RichText text={cell} />
+                    <td key={i} data-label={block.head[i]}>
+                      <span>
+                        <RichText text={cell} />
+                      </span>
                     </td>
                   ))}
                 </tr>

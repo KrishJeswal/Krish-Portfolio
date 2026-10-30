@@ -236,7 +236,11 @@ code {
   padding: 0.05em 0.3em;
   border-radius: 3px;
 }
-.paper code,
+.paper code {
+  color: var(--umber);
+  background: #0000000f;
+}
+
 .metric {
   --L: 30px;
   display: grid;
@@ -608,6 +612,41 @@ code {
     font-size: 16.5px;
   }
 }
+@media (max-width: 640px) {
+  .table:not(.num) thead {
+    display: none;
+  }
+  .table:not(.num) tr {
+    display: block;
+    padding: 12px 0;
+    border-bottom: 1px dotted #00000038;
+  }
+  .table:not(.num) tr:last-child {
+    border-bottom: 0;
+  }
+  .table:not(.num) td {
+    display: grid;
+    grid-template-columns: 9ch minmax(0, 1fr);
+    gap: 12px;
+    padding: 3px 0;
+    border: 0;
+  }
+  .table:not(.num) td::before {
+    content: attr(data-label);
+    font: 600 9px/1.9 var(--f-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6a665e;
+  }
+  .table:not(.num) td:first-child {
+    display: block;
+    padding-bottom: 6px;
+  }
+  .table:not(.num) td:first-child::before {
+    content: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .next-card .tcard {
     transition: none;

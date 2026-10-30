@@ -66,26 +66,12 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  color: inherit;
-}
-
-p {
-  font: inherit;
-  letter-spacing: inherit;
-}
-
 h1,
 h2,
 h3,
 p,
 figure {
   margin: 0;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
 }
 
 ::selection {
