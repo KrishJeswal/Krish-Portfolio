@@ -1,6 +1,4 @@
-@import "./tokens.css";
-@import "./case-study.css";
-@import "./responsive.css";
 @import "./theme.css";
 @import "./header.css";
 @import "./catalogue.css";
+@import "./case.css";

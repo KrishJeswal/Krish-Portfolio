@@ -1,6 +1,6 @@
-import { useLayoutEffect, type ReactElement } from "react";
+import { useEffect, useLayoutEffect, type ReactElement } from "react";
 import { homeSections } from "../data/home";
-import { scrollToTop, startSmoothScroll } from "../lib/motion";
+import { scrollToId, scrollToTop, startSmoothScroll } from "../lib/motion";
 import { useCurrentSection } from "../lib/useCurrentSection";
 import { useHomeMotion } from "../lib/useHomeMotion";
 import Header from "../components/shared/Header";
@@ -24,6 +24,12 @@ export default function Home(): ReactElement {
   }, []);
 
   useHomeMotion();
+
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    document.fonts.ready.then(() => requestAnimationFrame(() => scrollToId(id)));
+  }, []);
 
   return (
     <>

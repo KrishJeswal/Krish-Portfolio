@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
   The observed band is 5% of the viewport, 40% from the top. Only the section
   crossing that line intersects it, so tall sections never report together.
 */
-export function useCurrentSection(ids: readonly string[]): string {
+export function useCurrentSection(ids: readonly string[], key = ""): string {
   const [current, setCurrent] = useState(ids[0]);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export function useCurrentSection(ids: readonly string[]): string {
       if (el) observer.observe(el);
     }
     return () => observer.disconnect();
-  }, [ids]);
+  }, [ids, key]);
 
   return current;
 }
