@@ -45,7 +45,14 @@ export type Block =
     }
   | { readonly kind: "metric"; readonly value: string; readonly caption: string }
   | { readonly kind: "formula"; readonly text: string }
-  | { readonly kind: "note"; readonly label: string; readonly text: string }
+  | { readonly kind: "aside"; readonly label: string; readonly text: string }
+  | {
+      readonly kind: "list";
+      readonly style: "todo" | "limits";
+      readonly label: string;
+      readonly items: readonly string[];
+    }
+  | { readonly kind: "code"; readonly text: string }
   | {
       readonly kind: "table";
       readonly head: readonly [string, string, string];
@@ -279,19 +286,21 @@ const ciphertrace: Project = {
         text: "Summing logs rewards well-calibrated soft probabilities and punishes overconfident ones, and the punishment compounds exponentially with trace count. A tree leaf that says 1.0 and is wrong contributes a catastrophic term. An MLP’s sigmoid output that says 0.4 and is wrong barely moves the needle. Argmax accuracy cannot see this difference at all.",
       },
       {
-        kind: "note",
-        label: "ANOVA is actively harmful",
-        text: "It pushes GE *above* the random baseline of 127. It selects mask-correlated samples instead of key-correlated ones, so it doesn’t fail to help — it points the attack away from the signal. I kept it in the grid as a negative control.",
+        kind: "table",
+        head: ["Finding", "GE @ 500", "Why"],
+        rows: [
+          ["ANOVA features", "> 127 (worse than random)", "selects mask-correlated samples"],
+          [
+            "PCA features + MLP",
+            "16.36 (best HW attack)",
+            "folds the `v ⊕ m` and `m` windows into one component",
+          ],
+          ["Identity labels (256-class)", "12.03 → 0.46", "HW labels throw away discriminability"],
+        ],
       },
       {
-        kind: "note",
-        label: "PCA wins because it can combine",
-        text: "It builds linear combinations across all 700 samples, which can fold the `v ⊕ m` window and the `m` window into a single component. The MLP then exploits that combination non-linearly. SHAP on the PCA+MLP model confirms it’s using distributed regions that SNR never selects.",
-      },
-      {
-        kind: "note",
-        label: "The label model decides everything",
-        text: "Swapping 9-class Hamming Weight for 256-class Identity labels drops GE from 12.03 to 0.46 at 500 traces. HW is the field-standard default and it’s the wrong one — it throws away discriminability to buy tractability I didn’t need.",
+        kind: "body",
+        text: "I kept ANOVA in the grid as a negative control. SHAP on the PCA+MLP model confirms it leans on distributed regions that SNR never selects.",
       },
     ],
     residual: [
@@ -309,18 +318,28 @@ const ciphertrace: Project = {
         text: "GE below 5 counts as a practical break in the literature. 0.46 means the correct key is essentially always ranked first.",
       },
       {
-        kind: "note",
-        label: "What this isn’t",
-        text: "One byte, one key, one device. Full AES-128 recovery means running the pipeline sixteen times, and nothing here tests portability across devices. First-order masking only — higher-order or shuffling countermeasures would need explicitly multivariate models. The classical-ML scope is deliberate but it does leave performance on the table: the best published ASCAD attacks use CNNs on raw traces and reach far lower NtD.",
+        kind: "table",
+        head: ["Scope", "Tested", "Not tested"],
+        rows: [
+          ["Key", "1 byte, 1 key", "full AES-128 (16 runs)"],
+          ["Device", "ATMega8515", "portability across devices"],
+          ["Countermeasure", "first-order masking", "higher-order, shuffling"],
+          ["Models", "classical ML", "CNNs on raw traces"],
+        ],
       },
       {
         kind: "body",
         text: "`compute_ge` is also honestly slow. It’s a pure-Python triple loop — 256 hypotheses × 100 experiments × several trace counts — and it dominates runtime badly enough that I dropped SVM from some grid cells.",
       },
       {
-        kind: "note",
+        kind: "list",
+        style: "todo",
         label: "Next",
-        text: "Vectorize GE with a precomputed HW table, add a CNN baseline to quantify the classical-vs-deep gap, make the Identity model selectable in the app rather than just referenced.",
+        items: [
+          "Vectorize GE with a precomputed HW table",
+          "Add a CNN baseline to measure the classical-vs-deep gap",
+          "Make the Identity model selectable in the app",
+        ],
       },
     ],
   },
@@ -361,7 +380,8 @@ const lorerecall: Project = {
         items: [
           {
             label: "Stack",
-            value: "Python 3.12, ZenML, crawl4ai, MongoDB Atlas, LangChain, smolagents, Unsloth, Gradio, Opik",
+            value:
+              "Python 3.12, ZenML, crawl4ai, MongoDB Atlas, LangChain, smolagents, Unsloth, Gradio, Opik",
           },
           { label: "Corpus", value: "~100 Notion pages → ~600 crawled documents" },
           {
@@ -473,7 +493,7 @@ const lorerecall: Project = {
         text: "ZenML’s step caching isn’t decoration here. The crawl takes twenty minutes and I rewrote the quality-scoring prompt about six times. Without caching that’s a lost day.",
       },
       {
-        kind: "note",
+        kind: "aside",
         label: "The duplication is deliberate",
         text: "The two apps share no code on purpose. There are about 150 duplicated lines in the retriever setup and I kept them, because the inference app has to deploy without dragging in the training app’s dependencies. If the duplication grows much past this I’ll extract a third shared package rather than reconnect them.",
       },
@@ -493,9 +513,16 @@ const lorerecall: Project = {
       },
       { kind: "body", text: "Running it locally made rebuilds free, so I actually tried things." },
       {
-        kind: "note",
-        label: "Why 3B and not 8B",
-        text: "At Q4_K_M a 3B is about 2 GB, fitting entirely in VRAM with room left for the KV cache. An 8B spills to CPU and generates three to five times slower. So I gave up some quality on one narrow, repetitive task to get a model that runs on hardware I own — which is the actual argument for small specialised models, as opposed to just asserting that small specialised models are good.",
+        kind: "table",
+        head: ["Local model (Q4_K_M)", "Footprint", "On a 6 GB GPU"],
+        rows: [
+          ["Llama 3.2 3B", "~2 GB", "fits in VRAM, room for KV cache"],
+          ["8B", "too big for VRAM", "spills to CPU, 3–5× slower"],
+        ],
+      },
+      {
+        kind: "body",
+        text: "So I gave up some quality on one narrow, repetitive task to get a model that runs on hardware I own.",
       },
       {
         kind: "body",
@@ -516,14 +543,24 @@ const lorerecall: Project = {
         text: "The agent gets its own pass: a custom heuristic metric for summary density, plus LLM-as-judge on answer quality, both run through Opik with step-level traces. Tracing matters more than it sounds — when an agent picks its own tools, a bad answer has three or four possible origins, and without traces you’re guessing which one failed.",
       },
       {
-        kind: "note",
+        kind: "list",
+        style: "limits",
         label: "Where it’s weak",
-        text: "The dataset isn’t group-split properly, so the evaluation numbers are softer than they look and I know it. The corpus goes stale — ingestion is a full rebuild rather than incremental, with nothing scheduled. And the Notion integration only sees pages explicitly shared with it, which returns an empty list that looks exactly like an empty database. That one cost me an hour.",
+        items: [
+          "The dataset isn’t group-split, so eval numbers are softer than they look",
+          "Ingestion is a full rebuild with nothing scheduled, so the corpus goes stale",
+          "Notion only sees explicitly shared pages, and the empty list looks like an empty database",
+        ],
       },
       {
-        kind: "note",
+        kind: "list",
+        style: "todo",
         label: "Next",
-        text: "Cross-encoder reranking over the top 20 hybrid results, query rewriting before retrieval, and incremental ingestion keyed on `last_edited_time` so the rebuild stops being all-or-nothing.",
+        items: [
+          "Cross-encoder reranking over the top-20 hybrid results",
+          "Query rewriting before retrieval",
+          "Incremental ingestion keyed on `last_edited_time`",
+        ],
       },
     ],
   },
@@ -554,7 +591,10 @@ const glyphmark: Project = {
   },
   sections: {
     capture: [
-      { kind: "lead", text: "Write the capability once; expose it through every door an agent might reach for." },
+      {
+        kind: "lead",
+        text: "Write the capability once; expose it through every door an agent might reach for.",
+      },
       {
         kind: "body",
         text: "GlyphMark writes a capability once in a shared core package, then exposes it through a terminal CLI, a local stdio MCP server, a remote HTTP MCP server behind OAuth, and a Skill that tells agents which one to pick. The shipped operation sends a Telegram message and is deliberately trivial. The project is the wiring, not the payload.",
@@ -562,7 +602,10 @@ const glyphmark: Project = {
       {
         kind: "meta",
         items: [
-          { label: "Stack", value: "TypeScript 6 (strict), Bun, Zod 4, MCP SDK, Commander, Hono, Clerk, tsdown" },
+          {
+            label: "Stack",
+            value: "TypeScript 6 (strict), Bun, Zod 4, MCP SDK, Commander, Hono, Clerk, tsdown",
+          },
           { label: "Shape", value: "Monorepo — 1 core package, 3 adapters, 1 Skill" },
           { label: "Published", value: "Three packages on npm; the remote app stays private" },
           { label: "Surfaces", value: "CLI, stdio MCP, remote HTTP MCP, Skill" },
@@ -579,7 +622,7 @@ const glyphmark: Project = {
         text: "Implement the capability separately behind each of those and it drifts. The CLI validates one way, the MCP tool another, and eventually they disagree about what a valid input is.",
       },
       {
-        kind: "note",
+        kind: "aside",
         label: "The sharper problem is credentials",
         text: "Every surface needs the same bot token, but “where does the token come from” has a different correct answer per surface. And on the MCP surfaces there’s a security wrinkle that doesn’t exist on the CLI: anything you put in a tool’s input schema is something the model can be persuaded to fill in, log, or hand back.",
       },
@@ -697,14 +740,30 @@ const glyphmark: Project = {
         text: "The remote server is where this gets interesting, because two independent credentials meet at every request. A Clerk OAuth bearer token in the Authorization header answers *who is calling*. A URL-encoded bot token in the path segment answers *which bot to send as*. They’re verified separately and neither substitutes for the other.",
       },
       {
-        kind: "note",
-        label: "Statelessness falls out of it",
-        text: "Each request builds a fresh McpServer bound to that request’s bot token, connects it over a streamable HTTP transport in stateless JSON mode, and closes it in a finally block once the response is out. Nothing is shared between requests, so multi-tenancy falls out of the request lifecycle instead of needing a session store.",
+        kind: "diagram",
+        items: [
+          { kind: "node", lines: ["Request", "Clerk bearer + bot token in the path"] },
+          { kind: "link" },
+          { kind: "node", lines: ["new McpServer", "bound to this request’s bot token"] },
+          { kind: "link" },
+          { kind: "node", lines: ["Streamable HTTP", "stateless JSON mode"] },
+          { kind: "link" },
+          { kind: "node", lines: ["Response sent"] },
+          { kind: "link", label: "finally", accent: true },
+          { kind: "node", lines: ["server.close()"], accent: true },
+        ],
       },
       {
-        kind: "note",
-        label: "The 401 is load-bearing",
-        text: "A missing or invalid bearer token returns 401 with a `WWW-Authenticate: Bearer resource_metadata=\"…\"` header pointing at the protected-resource metadata route. That isn’t decoration — it’s the exact handshake MCP OAuth clients follow to discover the login flow, so getting the header shape right is the difference between a client that can self-register and one that just fails.",
+        kind: "body",
+        text: "Nothing is shared between requests, so multi-tenancy falls out of the request lifecycle instead of needing a session store.",
+      },
+      {
+        kind: "code",
+        text: 'HTTP/1.1 401 Unauthorized\nWWW-Authenticate: Bearer resource_metadata="…"',
+      },
+      {
+        kind: "body",
+        text: "That header is the exact handshake MCP OAuth clients follow to discover the login flow. Get its shape wrong and a client can’t self-register; it just fails.",
       },
       {
         kind: "body",
@@ -717,14 +776,13 @@ const glyphmark: Project = {
         text: "Three packages published to npm (core, glyphmark, glyphmark-mcp), one private remote app, one Skill installable via `npx skills add`. Publishing core first is a hard ordering constraint — the CLI and local MCP depend on it through `workspace:*`, which resolves to a concrete version at publish time.",
       },
       {
-        kind: "note",
-        label: "No test suite",
-        text: "Deliberate, not an oversight: the adapters are thin enough that verification is running format, lint, typecheck, the three builds, and then exercising each surface by hand. It’s honest for a repo this size and it’s the first thing I’d change if a second operation landed, because the “adding your own operation” checklist is eight steps across five files and that’s exactly the kind of thing that rots silently.",
-      },
-      {
-        kind: "note",
-        label: "One operation",
-        text: "The pattern claims to scale to many; it has been tested with one. The explicit-registration choice specifically bets that the boilerplate won’t hurt until there are enough operations that it does — which is a bet I haven’t collected on yet.",
+        kind: "list",
+        style: "limits",
+        label: "Known gaps",
+        items: [
+          "No test suite: format, lint, typecheck, three builds, then each surface by hand",
+          "Tested with one operation; adding another is 8 steps across 5 files",
+        ],
       },
       {
         kind: "body",
@@ -759,7 +817,10 @@ const pathfindr: Project = {
   },
   sections: {
     capture: [
-      { kind: "lead", text: "Pick a start and an end room; it traces the shortest walk through the building." },
+      {
+        kind: "lead",
+        text: "Pick a start and an end room; it traces the shortest walk through the building.",
+      },
       {
         kind: "body",
         text: "Click the rooms on the floor plan or use the dropdowns, and Pathfindr animates the route through the ETE block at RVCE, switching floors through the lift when it has to. Four floors, hand-built graph, A* underneath.",
@@ -780,9 +841,12 @@ const pathfindr: Project = {
         text: "GPS is useless indoors, and the building has no machine-readable representation of itself. There’s no OSM data for the ETE block, no BIM export, no floor-plan API. Whatever graph the search runs over, someone has to build it by hand from architectural drawings.",
       },
       {
-        kind: "note",
-        label: "Where the naive approach breaks",
-        text: "If you treat the lift as just another edge weighted by geometric distance, vertical travel becomes almost free — the shortest path will happily ride the lift up a floor and back down to save a few metres of corridor. That’s optimal by the metric and absurd to a person actually walking it.",
+        kind: "table",
+        head: ["Lift edge weighted by", "Shortest path", "Walking it"],
+        rows: [
+          ["geometric distance", "rides the lift up and back down to save a few metres", "absurd"],
+          ["distance + transit penalty", "changes floor only when it has to", "what you’d actually walk"],
+        ],
       },
       {
         kind: "body",
@@ -790,7 +854,10 @@ const pathfindr: Project = {
       },
     ],
     topology: [
-      { kind: "lead", text: "Pure geometry and graph search, with React kept on the other side of the boundary." },
+      {
+        kind: "lead",
+        text: "Pure geometry and graph search, with React kept on the other side of the boundary.",
+      },
       {
         kind: "diagram",
         items: [
@@ -881,10 +948,10 @@ const pathfindr: Project = {
         kind: "body",
         text: "Pure Euclidean weighting optimizes distance travelled. But a person doesn’t experience a lift ride as distance. They experience waiting, entering, riding, exiting — a fixed cost that dwarfs the few metres of horizontal travel it might save. Adding a large constant to every cross-floor edge encodes that: the search now only changes floors when staying put is genuinely worse, which matches how anyone actually navigates a building.",
       },
+      { kind: "formula", text: "h(n) = ‖n − goal‖ + c · |floor(n) − floor(goal)|,   c ≤ lift penalty" },
       {
-        kind: "note",
-        label: "Admissibility is the catch",
-        text: "A* is only guaranteed optimal if the heuristic never overestimates the true remaining cost. Straight-line distance is admissible on its own. Adding a floor-difference term keeps it admissible as long as that term stays at or below the real penalty — overshoot it and the search starts returning wrong paths that look plausible enough that you don’t notice.",
+        kind: "body",
+        text: "A* is only optimal if the heuristic never overestimates. Keep `c` at or below the real penalty and it holds; overshoot it and the search returns wrong paths that look plausible enough that you don’t notice.",
       },
       {
         kind: "body",
@@ -897,14 +964,25 @@ const pathfindr: Project = {
         text: "Working four-floor routing, click-to-select on the plans, animated multi-floor paths, unit-tested graph, deployed and shareable.",
       },
       {
-        kind: "note",
+        kind: "list",
+        style: "limits",
         label: "What it doesn’t do",
-        text: "No live position — you tell it where you are, it doesn’t know. The graph is hand-authored, so extending to another block is manual work rather than configuration. There’s no accessibility routing: stairs and lift aren’t distinguished by user preference, which matters for anyone who can’t take stairs and is the gap I’d close first. And the companion Faculty Tracker is a separate page, not an input to the router.",
+        items: [
+          "No live position: you tell it where you are",
+          "Hand-authored graph, so a new block is manual work",
+          "No stairs-vs-lift preference, the gap I’d close first",
+          "The Faculty Tracker is a separate page, not a router input",
+        ],
       },
       {
-        kind: "note",
+        kind: "list",
+        style: "todo",
         label: "Next",
-        text: "Derive the node graph semi-automatically from floor-plan SVGs, add stairs-vs-lift preference as a routing constraint, and route *to a person* rather than a room by feeding tracker availability into destination selection.",
+        items: [
+          "Derive the node graph from floor-plan SVGs",
+          "Stairs-vs-lift preference as a routing constraint",
+          "Route to a person, using tracker availability",
+        ],
       },
     ],
   },

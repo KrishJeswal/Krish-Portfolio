@@ -1,46 +1,43 @@
+import type { ReactElement } from "react";
 import type { DiagramItem, DiagramNode } from "../../data/projects";
 
-function Node({ node }: { node: DiagramNode }) {
+function Node({ node }: { node: DiagramNode }): ReactElement {
+  const [title, ...rest] = node.lines;
   return (
-    <div className={`dg-node${node.accent ? " is-key" : ""}${node.store ? " is-store" : ""}`}>
-      {node.lines.map((line, i) => (
+    <div className={`dg-node${node.accent ? " accent" : ""}${node.store ? " store" : ""}`}>
+      <b>{title}</b>
+      {rest.map((line, i) => (
         <span key={i}>{line}</span>
       ))}
     </div>
   );
 }
 
-function Item({ item }: { item: DiagramItem }) {
+function Item({ item }: { item: DiagramItem }): ReactElement {
   switch (item.kind) {
     case "node":
       return <Node node={item} />;
-
     case "link":
       return (
-        <div className="dg-link" aria-hidden="true">
-          <span className={`dg-line${item.dashed ? " is-dashed" : ""}${item.accent ? " is-key" : ""}`} />
-          {item.label !== undefined && (
-            <>
-              <span className="dg-link-label">{item.label}</span>
-              <span className={`dg-line${item.dashed ? " is-dashed" : ""}${item.accent ? " is-key" : ""}`} />
-            </>
-          )}
+        <div
+          className={`dg-link${item.dashed ? " dashed" : ""}${item.accent ? " accent" : ""}`}
+          aria-hidden="true"
+        >
+          {item.label !== undefined && <span>{item.label}</span>}
         </div>
       );
-
     case "row":
       return (
-        <div className="dg-row" data-columns={item.columns}>
+        <div className="dg-row" style={{ gridTemplateColumns: `repeat(${item.columns}, minmax(0, 1fr))` }}>
           {item.nodes.map((node, i) => (
             <Node node={node} key={i} />
           ))}
         </div>
       );
-
     case "group":
       return (
         <div className="dg-group">
-          <span className="dg-group-label">{item.label}</span>
+          <span className="mono">{item.label}</span>
           {item.items.map((child, i) => (
             <Item item={child} key={i} />
           ))}
@@ -49,12 +46,12 @@ function Item({ item }: { item: DiagramItem }) {
   }
 }
 
-export default function Diagram({ items }: { items: readonly DiagramItem[] }) {
+export default function Diagram({ items }: { items: readonly DiagramItem[] }): ReactElement {
   return (
-    <div className="diagram">
+    <figure className="diagram" aria-label="Architecture diagram">
       {items.map((item, i) => (
         <Item item={item} key={i} />
       ))}
-    </div>
+    </figure>
   );
 }
