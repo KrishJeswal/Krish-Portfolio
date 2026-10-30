@@ -59,17 +59,3 @@
   background: var(--kraft);
   transform-origin: left;
 }
-
-.loader-codes {
-  display: flex;
-  gap: 18px;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-}
-.loader-codes span {
-  color: #4a4a4f;
-  transition: color 0.3s;
-}
-.loader-codes span.on {
-  color: var(--kraft);
-}

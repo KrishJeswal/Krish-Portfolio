@@ -3,8 +3,6 @@ import gsap from "gsap";
 import { finishLoader, loaderPending } from "../../lib/loader";
 import { prefersReducedMotion } from "../../lib/motion";
 
-const CODES = ["ML", "SW", "EMB"];
-
 export default function Loader(): ReactElement | null {
   const root = useRef<HTMLDivElement>(null);
   const [gone, setGone] = useState(false);
@@ -18,7 +16,6 @@ export default function Loader(): ReactElement | null {
     }
     document.documentElement.classList.add("is-loading");
     const count = el.querySelector<HTMLElement>(".loader-count")!;
-    const codes = el.querySelectorAll(".loader-codes span");
     const progress = { v: 0 };
 
     const ctx = gsap.context(() => {
@@ -32,9 +29,7 @@ export default function Loader(): ReactElement | null {
             duration: 1.3,
             ease: "power2.inOut",
             onUpdate: () => {
-              const v = Math.round(progress.v);
-              count.textContent = String(v).padStart(3, "0");
-              codes.forEach((c, i) => c.classList.toggle("on", v >= ((i + 1) * 100) / (CODES.length + 0.4)));
+              count.textContent = String(Math.round(progress.v)).padStart(3, "0");
             },
           },
           0.15,
@@ -68,11 +63,6 @@ export default function Loader(): ReactElement | null {
         <span className="loader-count">000</span>
         <span className="loader-rule">
           <i />
-        </span>
-        <span className="mono loader-codes">
-          {CODES.map((c) => (
-            <span key={c}>{c}</span>
-          ))}
         </span>
       </div>
     </div>

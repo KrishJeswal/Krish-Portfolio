@@ -50,7 +50,7 @@ export default function Drawer(): ReactElement {
             <span className="shade" aria-hidden="true" />
           </Link>
         ))}
-        <a className="pcard paper more" href={profile.github}>
+        <a className="pcard paper more" href={profile.github} target="_blank" rel="noopener noreferrer">
           <span className="mono">{moreWork.eyebrow}</span>
           <h3>{moreWork.title}</h3>
           <p>{moreWork.body}</p>

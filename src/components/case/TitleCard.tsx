@@ -27,7 +27,7 @@ export default function TitleCard({ project }: { project: Project }): ReactEleme
           )}
         </div>
         <div className="tfoot">
-          <a href={project.repo} target="_blank" rel="noopener">
+          <a href={project.repo} target="_blank" rel="noopener noreferrer">
             Source on GitHub →
           </a>
           <Link to="/#work">Back to the drawer</Link>

@@ -61,7 +61,9 @@ export default function RequestSlip(): ReactElement {
               {contact.links.map((l, i) => (
                 <span key={l.label}>
                   {i > 0 && " · "}
-                  <a href={l.href}>{l.label}</a>
+                  <a href={l.href} target="_blank" rel="noopener noreferrer">
+                    {l.label}
+                  </a>
                 </span>
               ))}
             </span>
