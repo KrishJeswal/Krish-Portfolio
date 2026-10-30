@@ -11,6 +11,7 @@ import Drawer from "../components/home/Drawer";
 import SkillIndex from "../components/home/SkillIndex";
 import Shelf from "../components/home/Shelf";
 import RequestSlip from "../components/home/RequestSlip";
+import Loader from "../components/home/Loader";
 
 const IDS = homeSections.map((s) => s.id);
 
@@ -33,6 +34,7 @@ export default function Home(): ReactElement {
 
   return (
     <>
+      <Loader />
       <a className="skip" href="#preface">
         Skip to content
       </a>

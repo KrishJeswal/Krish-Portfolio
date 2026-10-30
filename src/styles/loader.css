@@ -1,0 +1,75 @@
+.loader {
+  display: none;
+}
+
+/* Fallback: if the bundle never runs, the overlay still clears itself. */
+.js .loader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  display: grid;
+  place-items: center;
+  background: var(--slate);
+  animation: loader-fallback 0.4s 6s forwards;
+}
+
+@keyframes loader-fallback {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.is-loading,
+.is-loading body {
+  overflow: hidden;
+}
+
+.loader-in {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  width: min(78vw, 340px);
+  /* Centre on the visible viewport, not the one behind a phone's address bar. */
+  margin-bottom: calc(100lvh - 100svh);
+}
+
+.loader-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ash);
+}
+
+.loader-count {
+  font: 400 clamp(72px, 16vw, 112px) / 0.9 var(--f-display);
+  letter-spacing: -0.02em;
+  color: var(--bone);
+  font-variant-numeric: tabular-nums;
+}
+
+.loader-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--hair);
+}
+.loader-rule i {
+  display: block;
+  height: 100%;
+  background: var(--kraft);
+  transform-origin: left;
+}
+
+.loader-codes {
+  display: flex;
+  gap: 18px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+.loader-codes span {
+  color: #4a4a4f;
+  transition: color 0.3s;
+}
+.loader-codes span.on {
+  color: var(--kraft);
+}

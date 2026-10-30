@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "./motion";
+import { loaderDone } from "./loader";
 
 const onView = (trigger: gsap.DOMTarget, start = "top 78%"): ScrollTrigger.Vars => ({
   trigger,
@@ -13,8 +14,8 @@ const draw = (targets: gsap.TweenTarget, vars: gsap.TweenVars = {}) =>
   gsap.to(targets, { strokeDashoffset: 0, ease: "power2.inOut", duration: 1, ...vars });
 
 function cover() {
-  gsap
-    .timeline({ delay: 0.1 })
+  const intro = gsap
+    .timeline({ paused: true })
     .from(".ghost", { y: 120, opacity: 0, duration: 1, stagger: 0.08, ease: "expo.out" })
     .from(".cat", { y: 220, rotationX: 24, duration: 1.3, ease: "expo.out" }, "<0.1")
     .from(".cat-name .ch", { yPercent: 110, duration: 0.9, ease: "expo.out", stagger: 0.035 }, "-=0.7")
@@ -31,6 +32,7 @@ function cover() {
     )
     .from(".hero-foot span", { opacity: 0, y: 8, stagger: 0.1, duration: 0.5 }, "-=0.2")
     .from(".bar", { opacity: 0, duration: 0.6 }, "-=0.6");
+  loaderDone.then(() => intro.play());
 
   gsap.to(".hero-foot", {
     opacity: 0,

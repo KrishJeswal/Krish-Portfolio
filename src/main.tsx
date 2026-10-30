@@ -17,9 +17,6 @@ if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
 }
 
-// Set before render: CSS hides animatable strokes only when JS is present, so prerendered HTML never shows blank.
-document.documentElement.classList.add("js");
-
 const container = document.getElementById("root")!;
 
 const tree = (
