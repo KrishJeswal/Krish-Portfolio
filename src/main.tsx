@@ -2,24 +2,22 @@ import { StrictMode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import "@fontsource/gloock/latin-400.css";
+import "@fontsource/hanken-grotesk/latin-400.css";
+import "@fontsource/hanken-grotesk/latin-400-italic.css";
+import "@fontsource/hanken-grotesk/latin-500.css";
+import "@fontsource/martian-mono/latin-400.css";
+import "@fontsource/martian-mono/latin-600.css";
+import "@fontsource/martian-mono/latin-700.css";
+import "@fontsource/courier-prime/latin-400.css";
+import "@fontsource/courier-prime/latin-700.css";
 import "./styles/global.css";
 
-/*
-  Both pages decide their own starting scroll — the home page opens on the
-  hero and deals the name in, the case study opens on its title. Leaving
-  restoration on "auto" lets the browser drop a reload back into whatever
-  section was last on screen, which lands mid-narrative and skips the intro.
-*/
 if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
 }
 
-/*
-  Marks that JS is running, before the first render. The CSS uses it to gate
-  every state that starts hidden and needs JS to reveal it — the loader, the
-  hero deal, the case-study section entrances. Without it, the prerendered
-  HTML would render blank for anyone whose JS has not arrived.
-*/
+// Set before render: CSS hides animatable strokes only when JS is present, so prerendered HTML never shows blank.
 document.documentElement.classList.add("js");
 
 const container = document.getElementById("root")!;
@@ -32,13 +30,7 @@ const tree = (
   </StrictMode>
 );
 
-/*
-  The build prerenders every route, so in production #root already holds the
-  full markup and must be hydrated — calling createRoot().render() on it
-  throws that markup away and rebuilds from scratch, which wastes the
-  prerender and flashes. `npm run dev` serves an empty shell, hence the
-  branch rather than hydrateRoot unconditionally.
-*/
+// Production HTML is prerendered and must be hydrated; the dev server serves an empty shell.
 if (container.hasChildNodes()) {
   hydrateRoot(container, tree);
 } else {

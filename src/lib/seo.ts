@@ -17,12 +17,7 @@ export type PageMeta = {
 const HOME_DESCRIPTION =
   "Krish Jeswal — machine-learning researcher, full-stack developer and embedded systems engineer. ML side-channel cryptanalysis on ASCAD, agentic retrieval systems, a multi-surface MCP toolchain, and graph-based indoor navigation.";
 
-/**
- * The first two paragraphs of a case study's Capture section are its hook and
- * its summary, which is exactly what a search result or a link preview wants.
- * Taking them from the same data the page renders means the description can
- * never drift from the article.
- */
+/** A case study's description is the opening of its Capture section. */
 function describeProject(slug: ProjectSlug): string {
   const project = projectBySlug(slug);
   const prose = project.sections.capture

@@ -1,8 +1,10 @@
+import type { ArtKind } from "../components/ink/shapes";
+import type { ProjectSlug } from "./projects";
 
 export const profile = {
   name: "Krish Jeswal",
   email: "connectwithkjeswal@gmail.com",
-  location: "Bengaluru, IN",
+  location: "Bengaluru · India",
   github: "https://github.com/KrishJeswal",
   linkedin: "https://www.linkedin.com/in/krishjeswal/",
   resume: "/assets/krish-jeswal-resume.pdf",
@@ -14,179 +16,244 @@ export const roles = [
   "Embedded Systems Engineer",
 ] as const;
 
-/**
- * `label` is what the nav roll reads out; `eyebrow` is the section's own
- * heading. Work is the one place they differ.
- */
-export const sections = [
-  { id: "hero", number: "01", label: "Home", eyebrow: "Hero" },
-  { id: "about", number: "02", label: "About", eyebrow: "About" },
-  { id: "work", number: "03", label: "Work", eyebrow: "Selected work" },
-  { id: "skills", number: "04", label: "Skills", eyebrow: "Skills" },
-  { id: "experience", number: "05", label: "Experience", eyebrow: "Experience" },
-  { id: "contact", number: "06", label: "Contact", eyebrow: "Contact" },
+export const disciplines = ["Machine learning", "Full-stack", "Embedded systems"] as const;
+
+export const homeSections = [
+  { id: "top", label: "Cover" },
+  { id: "preface", label: "Preface" },
+  { id: "fields", label: "Fields" },
+  { id: "work", label: "Projects" },
+  { id: "index", label: "Index" },
+  { id: "experience", label: "Shelf" },
+  { id: "contact", label: "Contact" },
 ] as const;
 
-export type SectionId = (typeof sections)[number]["id"];
+export const cover = {
+  lines: [
+    "Hi, I'm Krish. I build ML models and the software around them.",
+    "Undergrad at RVCE.",
+    "When nothing's compiling, I'm probably drinking coffee and halfway through a novel.",
+  ],
+  footLeft: "Portfolio · 2026",
+  footRight: "Scroll to open the drawer ↓",
+} as const;
 
-type ReelPanel = {
-  readonly number: string;
-  readonly channel: string;
+export const preface = {
+  heading:
+    "I build machine-learning systems, the software that ships them, and now and then the hardware underneath.",
+  paragraphs: [
+    "I'm an Electronics & Telecommunication undergrad at RVCE, Bengaluru. Most of my ML work sits on the evaluation side: harnesses, ablations and interpretability passes that tell me whether a gain is real or an artefact of the split.",
+    "On the web I own the whole path, from schema to the last bit of interaction polish. The degree is why I read systems bottom-up. The fiction habit is why this site is laid out like a library.",
+  ],
+} as const;
+
+type Field = {
+  readonly code: string;
+  readonly name: string;
+  readonly eyebrow: string;
   readonly title: string;
-  readonly lead: string;
   readonly body: string;
-  readonly facts: readonly { readonly label: string; readonly value: string }[];
+  readonly chips: readonly string[];
+  readonly filed: string;
+  readonly art: ArtKind;
 };
 
-export const reelPanels: readonly ReelPanel[] = [
+export const fields: readonly Field[] = [
   {
-    number: "01",
-    channel: "Inference",
-    title: "Machine Learning Researcher",
-    lead: "PyTorch, scikit-learn, SHAP and RAG — models that learn the hard patterns, and the tooling to prove they actually hold up.",
-    body: "Most of my work sits on the evaluation side: building the harnesses, ablations and interpretability passes that tell you whether a gain is real or an artefact of the split. Retrieval is the other half — chunking, reranking and grounding, tuned against questions the index was never meant to answer.",
-    facts: [
-      { label: "Focus", value: "Model eval & retrieval pipelines" },
-      { label: "Stack", value: "PyTorch · SHAP · LangChain" },
-      { label: "Domain", value: "Predictive ML & RAG" },
+    code: "ML",
+    name: "Machine learning",
+    eyebrow: "Field one",
+    title: "Models, and proof that they hold up.",
+    body: "Predictive ML and retrieval. Feature selection, calibration, chunking and reranking, measured against held-out data.",
+    chips: ["PyTorch", "scikit-learn", "XGBoost", "SHAP", "RAG", "QLoRA"],
+    filed: "CipherTrace · LoreRecall",
+    art: "net",
+  },
+  {
+    code: "SW",
+    name: "Software",
+    eyebrow: "Field two",
+    title: "Typed, end to end.",
+    body: "Web platforms, APIs and agent tooling. Contracts flow from the database to the component, so the compiler catches what review would miss.",
+    chips: ["TypeScript", "React", "Bun", "Hono", "MCP", "PostgreSQL"],
+    filed: "GlyphMark · Pathfindr",
+    art: "web",
+  },
+  {
+    code: "EMB",
+    name: "Embedded systems",
+    eyebrow: "Field three",
+    title: "Signals, timing, silicon.",
+    body: "Microcontrollers, FPGAs and radio links. Reading a system from the clock edge up is the habit I carry into everything else.",
+    chips: ["STM32", "ESP32", "Verilog", "FPGA", "LoRa", "KiCad"],
+    filed: "New cards on the way",
+    art: "chip",
+  },
+];
+
+export const moreWork = {
+  eyebrow: "On order",
+  title: "More on GitHub.",
+  body: "New work lands there before it gets a card here.",
+  link: "github.com/KrishJeswal →",
+} as const;
+
+export type Skill = { readonly name: string; readonly usedIn: readonly ProjectSlug[] };
+
+type SkillGroup = { readonly name: string; readonly skills: readonly Skill[] };
+
+const s = (name: string, ...usedIn: ProjectSlug[]): Skill => ({ name, usedIn });
+
+export const skillIndex: readonly SkillGroup[] = [
+  {
+    name: "Programming languages",
+    skills: [
+      s("Python", "ciphertrace", "lorerecall"),
+      s("TypeScript", "glyphmark"),
+      s("JavaScript", "pathfindr"),
+      s("SQL"),
+      s("C"),
+      s("HTML/CSS", "pathfindr"),
+      s("Bash"),
+      s("Verilog"),
+      s("Assembly"),
+      s("GLSL"),
     ],
   },
   {
-    number: "02",
-    channel: "Systems",
-    title: "Full-stack Developer",
-    lead: "React, TypeScript, FastAPI and GCP — the surface users touch and the services behind it, shipped end to end into production.",
-    body: "I like owning the whole path — schema, endpoint, state, the last 5% of interaction polish that decides whether a tool gets used twice. Typed contracts from database to component, deploys that are boring on purpose, and interfaces that hold their shape at 3am on someone else’s screen.",
-    facts: [
-      { label: "Focus", value: "Typed full-stack architecture" },
-      { label: "Stack", value: "React · TypeScript · FastAPI" },
-      { label: "Surface", value: "Web platform & APIs" },
+    name: "AI/ML & LLM engineering",
+    skills: [
+      s("PyTorch", "lorerecall"),
+      s("scikit-learn", "ciphertrace"),
+      s("Hugging Face", "lorerecall"),
+      s("RAG", "lorerecall"),
+      s("LangChain", "lorerecall"),
+      s("QLoRA", "lorerecall"),
+      s("XGBoost", "ciphertrace"),
+      s("SHAP", "ciphertrace"),
+      s("Ollama", "lorerecall"),
     ],
   },
   {
-    number: "03",
-    channel: "Silicon",
-    title: "Embedded Systems Engineer",
-    lead: "FPGAs, STM32, Verilog and UART — the physical layer the rest of the stack quietly stands on.",
-    body: "Four years of signals, timing diagrams and hardware that fails in ways no stack trace explains. It taught me to read a system from the bottom up, and it is why latency budgets and memory ceilings still feel like real constraints rather than numbers in a dashboard.",
-    facts: [
-      { label: "Focus", value: "Signals & timing" },
-      { label: "Stack", value: "Verilog · STM32 · UART" },
-      { label: "Degree", value: "ETE, 2028" },
+    name: "Data, retrieval & storage",
+    skills: [
+      s("NumPy", "ciphertrace"),
+      s("pandas"),
+      s("PostgreSQL"),
+      s("MongoDB", "lorerecall"),
+      s("Pydantic v2"),
+      s("ZenML", "lorerecall"),
+      s("matplotlib/seaborn"),
+    ],
+  },
+  {
+    name: "Full-stack development",
+    skills: [
+      s("React", "pathfindr"),
+      s("Node.js"),
+      s("REST API"),
+      s("MCP", "glyphmark"),
+      s("Hono", "glyphmark"),
+      s("OAuth", "glyphmark"),
+      s("Vite", "pathfindr"),
+      s("Three.js/WebGL"),
+      s("GSAP"),
+      s("Streamlit", "ciphertrace"),
+    ],
+  },
+  {
+    name: "Tools & infrastructure",
+    skills: [
+      s("Git"),
+      s("Docker"),
+      s("uv"),
+      s("pytest"),
+      s("Jupyter"),
+      s("Ruff/oxlint"),
+      s("Bun", "glyphmark"),
+      s("Firebase", "pathfindr"),
+      s("Opik", "lorerecall"),
+      s("Comet ML"),
+    ],
+  },
+  {
+    name: "Embedded systems & electronics",
+    skills: [
+      s("STM32"),
+      s("ESP32"),
+      s("FPGA"),
+      s("Arduino"),
+      s("UART"),
+      s("ADC"),
+      s("LoRa"),
+      s("RFID"),
+      s("KiCad"),
+      s("LTspice"),
+      s("Simulink"),
     ],
   },
 ];
 
-type Drawer = {
-  readonly number: string;
+type Volume = {
+  readonly volume: number;
   readonly title: string;
-  readonly tiles: readonly string[];
-};
-
-export const drawers: readonly Drawer[] = [
-  {
-    number: "01",
-    title: "Machine Learning",
-    tiles: [
-      "PyTorch",
-      "scikit-learn",
-      "XGBoost",
-      "SHAP",
-      "QLoRA",
-      "RAG",
-      "LangChain",
-      "Hugging Face",
-      "pandas",
-      "NumPy",
-      "ZenML",
-      "Ollama",
-    ],
-  },
-  {
-    number: "02",
-    title: "Full-Stack",
-    tiles: [
-      "React",
-      "TypeScript",
-      "Node.js",
-      "Vite",
-      "Hono",
-      "Bun",
-      "MCP",
-      "Three.js",
-      "MongoDB",
-      "PostgreSQL",
-      "Firebase",
-      "OAuth",
-    ],
-  },
-  {
-    number: "03",
-    title: "Embedded",
-    tiles: [
-      "STM32",
-      "ESP32",
-      "FPGA",
-      "Verilog",
-      "LoRa",
-      "KiCAD",
-      "Arduino",
-      "UART",
-      "RFID",
-      "Assembly",
-      "LTSpice",
-      "Simulink",
-    ],
-  },
-];
-
-type LedgerRow = {
-  readonly org: string;
+  readonly years: string;
   readonly role: string;
-  readonly year: string;
-  readonly range: string;
   readonly detail: string;
+  readonly tone: "pale" | "kraft" | "dark" | "stone";
+  readonly width: number;
 };
 
-export const ledger: readonly LedgerRow[] = [
+export const shelf: readonly Volume[] = [
   {
-    org: "IETE Student Forum",
-    role: "Web Developer",
-    year: "2025",
-    range: "Nov 2025 — Present",
+    volume: 4,
+    title: "GDG on Campus RVCE",
+    years: "2026 –",
+    role: "Research head",
     detail:
-      "I led the dev team that shipped the official Student Forum site — React, TypeScript, Tailwind, PostgreSQL, GitHub CI/CD, plus code review workflows across the chapter.",
+      "Earned 19 Google Cloud skill badges and mentored 15+ teams at the Vision 2047 hackathon on ML pipelines and cloud deployment.",
+    tone: "pale",
+    width: 95,
   },
   {
-    org: "Google Developer Groups",
-    role: "Research Lead",
-    year: "2025",
-    range: "Jun 2025 — Present",
-    detail:
-      "19 Google Cloud Skill Badges through Study Jams. I mentored 15+ teams at the Vision 2047 Hackathon on ML pipelines and cloud deployment.",
+    volume: 3,
+    title: "IETE Student Forum",
+    years: "2025 –",
+    role: "Web developer",
+    detail: "Led the team that shipped the forum's official site, and set up code review across the chapter.",
+    tone: "kraft",
+    width: 97,
   },
   {
-    org: "R.V. College of Engineering",
-    role: "Electronics & Telecom",
-    year: "2024",
-    range: "2024 — 2028",
-    detail:
-      "Undergraduate in Bengaluru. Where the embedded side of my work comes from — STM32, FPGA, LoRa, and the signal habits that carried into the research.",
+    volume: 2,
+    title: "R.V. College of Engineering",
+    years: "2024 – 28",
+    role: "B.E. Electronics & Telecom",
+    detail: "Bengaluru. Where the embedded work started.",
+    tone: "dark",
+    width: 92,
   },
   {
-    org: "Amity International School",
+    volume: 1,
+    title: "Amity International School",
+    years: "– 2023",
     role: "PCM + Computer Science",
-    year: "2023",
-    range: "2009 — 2023",
-    detail: "Physics, Chemistry, Maths and Computer Science.",
+    detail: "Elementary to high school.",
+    tone: "stone",
+    width: 99,
   },
 ];
 
-export const contactTabs = [
-  { label: "GitHub", href: profile.github },
-  { label: "LinkedIn", href: profile.linkedin },
-  { label: "Résumé", href: profile.resume },
-] as const;
-
-export const contactIntro =
-  "I’m easiest to reach when something is only half figured out. Bring the tangled version, the idea you can’t explain yet, or a good excuse for coffee.";
+export const contact = {
+  heading: ["Say", "hello."],
+  lede: "Got an idea, a question, or a book I should read next? Send it over. I'll reply over coffee.",
+  slip: {
+    borrower: "You",
+    item: "An idea, a question, or a good book",
+  },
+  links: [
+    { label: "GitHub", href: profile.github },
+    { label: "LinkedIn", href: profile.linkedin },
+    { label: "Résumé", href: profile.resume },
+  ],
+} as const;

@@ -1,28 +1,29 @@
-import { Fragment, type ReactElement } from "react";
-
-/**
- * Renders the two inline markers used by the case-study copy:
- *   `code` → <code>   *em* → <em>
- *
- * Case-study prose is stored as data, so it can't carry JSX. Both markers are
- * non-nesting and never span a paragraph, which is why a split is enough and a
- * parser isn't.
- */
+import { Fragment, type ReactElement, type ReactNode } from "react";
 
 const TOKEN = /(`[^`]+`|\*[^*]+\*)/g;
 
+// Courier Prime has no ⊕, so it gets a font that does.
+export function withXor(text: string): ReactNode {
+  if (!text.includes("⊕")) return text;
+  return text.split("⊕").map((part, i) => (
+    <Fragment key={i}>
+      {i > 0 && <span className="xor">⊕</span>}
+      {part}
+    </Fragment>
+  ));
+}
+
 export function RichText({ text }: { text: string }): ReactElement {
-  const parts = text.split(TOKEN);
   return (
     <>
-      {parts.map((part, i) => {
-        if (part.startsWith("`") && part.endsWith("`") && part.length > 1) {
-          return <code key={i}>{part.slice(1, -1)}</code>;
+      {text.split(TOKEN).map((part, i) => {
+        if (part.length > 1 && part.startsWith("`") && part.endsWith("`")) {
+          return <code key={i}>{withXor(part.slice(1, -1))}</code>;
         }
-        if (part.startsWith("*") && part.endsWith("*") && part.length > 1) {
+        if (part.length > 1 && part.startsWith("*") && part.endsWith("*")) {
           return <em key={i}>{part.slice(1, -1)}</em>;
         }
-        return <Fragment key={i}>{part}</Fragment>;
+        return <Fragment key={i}>{withXor(part)}</Fragment>;
       })}
     </>
   );

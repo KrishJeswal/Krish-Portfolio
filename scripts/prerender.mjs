@@ -1,15 +1,7 @@
 /**
- * Build-time prerender.
- *
- * Every page's content is static typed data, so each route can be rendered to
- * real HTML at build time and served as a plain file. This is what puts the
- * case-study prose in front of anything that does not execute JavaScript —
- * AI crawlers, link unfurlers, Bing — and it removes React from the critical
- * path for first paint. The client bundle still loads and hydrates on top.
- *
- * Output shape matters for Firebase Hosting: static files are matched before
- * rewrites, so writing dist/work/<slug>/index.html means that URL is served
- * directly rather than falling through the SPA rewrite to the shell.
+ * Build-time prerender: writes dist/<route>/index.html for every route so
+ * crawlers and link unfurlers get real HTML. Firebase serves static files
+ * before rewrites, so these win over the SPA fallback.
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
