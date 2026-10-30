@@ -38,6 +38,7 @@
 }
 
 html {
+  color-scheme: dark;
   background: var(--slate);
   color: var(--bone);
 }
