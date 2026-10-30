@@ -47,6 +47,7 @@ export default function Drawer(): ReactElement {
               <span className="mono go">Read</span>
             </div>
             <span className="punch" aria-hidden="true" />
+            <span className="shade" aria-hidden="true" />
           </Link>
         ))}
         <a className="pcard paper more" href={profile.github}>

@@ -49,6 +49,7 @@ export default function CoverCard(): ReactElement {
           </div>
           <span className="punch" aria-hidden="true" />
         </article>
+        <div className="hero-shade" aria-hidden="true" />
       </div>
       <div className="hero-foot mono" aria-hidden="true">
         <span>{cover.footLeft}</span>

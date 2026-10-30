@@ -26,6 +26,14 @@
     0 10px 28px -16px #00000080;
 }
 
+@media (hover: none) {
+  .chip {
+    background: #0e0e0ff2;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 .bar-name {
   font: 500 13px var(--f-body);
   letter-spacing: 0.02em;

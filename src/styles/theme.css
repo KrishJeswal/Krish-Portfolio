@@ -133,6 +133,7 @@ figure {
 
 .paper {
   position: relative;
+  isolation: isolate;
   background-color: var(--card);
   color: var(--soot);
 }

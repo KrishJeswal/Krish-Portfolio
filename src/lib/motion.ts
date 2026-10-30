@@ -9,6 +9,7 @@ export const prefersReducedMotion = (): boolean =>
 
 export function startSmoothScroll(): () => void {
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
   if (prefersReducedMotion()) return () => {};
   const instance = new Lenis({ lerp: 0.1 });
   const tick = (time: number) => instance.raf(time * 1000);

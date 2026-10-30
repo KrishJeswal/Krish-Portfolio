@@ -29,10 +29,20 @@ export function useLineGrid(key: string): void {
     sync();
     document.fonts.ready.then(sync);
     const late = window.setTimeout(sync, 2200);
-    window.addEventListener("resize", sync);
+    // A phone's address bar resizes the viewport height mid-scroll; only width changes reflow text.
+    let width = window.innerWidth;
+    let frame = 0;
+    const onResize = () => {
+      if (window.innerWidth === width) return;
+      width = window.innerWidth;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(sync);
+    };
+    window.addEventListener("resize", onResize);
     return () => {
       window.clearTimeout(late);
-      window.removeEventListener("resize", sync);
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", onResize);
     };
   }, [key]);
 }

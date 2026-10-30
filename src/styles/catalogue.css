@@ -12,6 +12,14 @@
   position: relative;
   width: min(1180px, 100%);
 }
+.hero-shade {
+  position: absolute;
+  inset: -12%;
+  z-index: 5;
+  background: var(--slate);
+  opacity: 0;
+  pointer-events: none;
+}
 .ghost {
   position: absolute;
   inset: 0;
@@ -528,6 +536,15 @@
 }
 .pcard .foot .go::after {
   content: " →";
+}
+.pcard .shade {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
 }
 .pcard .punch {
   bottom: calc(var(--L) * 0.14);

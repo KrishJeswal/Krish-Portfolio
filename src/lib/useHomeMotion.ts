@@ -44,7 +44,11 @@ function cover() {
     scale: 0.84,
     rotationX: 22,
     yPercent: 10,
-    filter: "brightness(.45)",
+    ease: "none",
+    scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
+  });
+  gsap.to(".hero-shade", {
+    opacity: 0.55,
     ease: "none",
     scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
   });
@@ -105,6 +109,7 @@ function desktopFields() {
       start: "top top",
       end: () => `+=${innerHeight * 1.8}`,
       pin: true,
+      anticipatePin: 1,
       scrub: 0.7,
     },
   });
@@ -161,6 +166,7 @@ function desktopDrawer() {
       start: "top top",
       end: () => `+=${innerHeight * cards.length * 1.15}`,
       pin: true,
+      anticipatePin: 1,
       scrub: 0.8,
       invalidateOnRefresh: true,
     },
@@ -228,7 +234,8 @@ function mobileFieldsAndDrawer(): () => void {
       start: "top top",
       end: () => `+=${innerHeight * (cards.length - 1) * 0.9}`,
       pin: true,
-      scrub: 0.6,
+      anticipatePin: 1,
+      scrub: 0.4,
       invalidateOnRefresh: true,
       onRefreshInit: fit,
     },
@@ -236,7 +243,8 @@ function mobileFieldsAndDrawer(): () => void {
   cards.forEach((card, i) => {
     if (!i) return;
     tl.to(card, { y: 0, ease: "power2.out", duration: 1 }, "+=0.2")
-      .to(cards[i - 1], { scale: 0.92, y: -12, filter: "brightness(.5)", ease: "none", duration: 1 }, "<")
+      .to(cards[i - 1], { scale: 0.92, y: -12, ease: "none", duration: 1 }, "<")
+      .to(cards[i - 1].querySelector(".shade"), { opacity: 0.5, ease: "none", duration: 1 }, "<")
       .to(card.querySelectorAll(".draw"), { strokeDashoffset: 0, stagger: 0.01, duration: 0.6 }, "<0.4");
   });
   tl.to({}, { duration: 0.2 });
