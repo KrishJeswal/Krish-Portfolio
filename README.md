@@ -14,6 +14,7 @@ React 19 · TypeScript (strict) · Vite 6 · React Router 7 · GSAP + ScrollTrig
 
 | Section | What it is |
 | --- | --- |
+| Loader | A counter from 000 to 100 on the dark page; wipes up into the cover once fonts are ready (first load only) |
 | Cover | An author card on ruled paper that drops in and types its lines out |
 | Preface | Intro on a stone sheet; the heading fills in word by word on scroll |
 | Fields | Three guide cards (ML, SW, EMB) with line-art illustrations; each tips back into the drawer on scroll |
@@ -35,7 +36,7 @@ Everything is static: no backend, no analytics, no runtime network dependency. F
 | Build | Vite 6 | Client bundle plus an SSR bundle that feeds the prerenderer |
 | Routing | React Router 7 | `/`, `/work/:slug`, catch-all redirect |
 | Motion | GSAP (ScrollTrigger) + Lenis | Pinned scroll scenes, scrubbed timelines, smooth scroll that keeps native scroll position |
-| Styling | Hand-authored CSS with custom properties | `theme`, `header`, `catalogue`, `case` |
+| Styling | Hand-authored CSS with custom properties | `theme`, `header`, `catalogue`, `case`, `loader` |
 | Fonts | Fontsource: Gloock, Hanken Grotesk, Martian Mono, Courier Prime | Bundled with hashed names, no font CDN |
 | Tests | Vitest | Content invariants and the inline-markup renderer |
 | Hosting | Firebase Hosting | Static files matched before the SPA rewrite |
@@ -44,7 +45,8 @@ Everything is static: no backend, no analytics, no runtime network dependency. F
 
 - `npm run build` = typecheck → client build → SSR build → `scripts/prerender.mjs`, which writes `dist/**/index.html` per route plus `sitemap.xml` and `robots.txt`.
 - All motion is created in effects (`useHomeMotion`, `useCaseMotion`) inside a `gsap.context`, so nothing runs under the prerender and everything reverts on unmount. Desktop and phone get different scenes via `gsap.matchMedia`.
-- `prefers-reduced-motion` skips Lenis and every timeline; illustrations render fully drawn.
+- `prefers-reduced-motion` skips the loader, Lenis and every timeline; illustrations render fully drawn.
+- The site is dark-only and declares `color-scheme: dark`, so browsers' forced dark modes leave the paper cards alone.
 - `useLineGrid` re-spaces the ruled lines on cards from the measured text line height, because some phones lay text out off the declared grid.
 
 ## Project structure
@@ -53,14 +55,14 @@ Everything is static: no backend, no analytics, no runtime network dependency. F
 src/
   main.tsx, App.tsx, entry-server.tsx
   data/          home.ts (profile, sections, fields, skills, shelf, contact) · projects.ts (cards + case studies)
-  lib/           motion, useCurrentSection, useHomeMotion, useCaseMotion, useLineGrid, seo, useDocumentMeta
+  lib/           motion, loader, useCurrentSection, useHomeMotion, useCaseMotion, useLineGrid, seo, useDocumentMeta
   pages/         Home, CaseStudy
   components/
     shared/      Header (name chip + now-reading dropdown)
     ink/         line-art illustrations as typed SVG shapes
-    home/        CoverCard, Preface, Fields, Drawer, SkillIndex, Shelf, RequestSlip
+    home/        Loader, CoverCard, Preface, Fields, Drawer, SkillIndex, Shelf, RequestSlip
     case/        CatalogueCard, TitleCard, Rail, Blocks, Diagram, NextCard
-  styles/        theme, header, catalogue, case
+  styles/        theme, header, catalogue, case, loader
 ```
 
 ## Getting started
@@ -76,7 +78,7 @@ npm run dev
 | `npm run build` | Typecheck, client build, SSR build, prerender |
 | `npm run preview` | Serve `dist/` (use trailing slashes for case studies, e.g. `/work/ciphertrace/`, to get the prerendered file) |
 | `npm test` | Vitest |
-| `npm run images` | Re-encode screenshots from `art/` to WebP + JPEG og images |
+| `npm run images` | Encode `art/*.png` to the JPEG og images in `public/assets/` |
 
 ## Editing content
 
