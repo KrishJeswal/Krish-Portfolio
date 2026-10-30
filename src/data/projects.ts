@@ -4,7 +4,7 @@ import type { ArtKind } from "../components/ink/shapes";
  * The four projects, and the seven-part case study for each, as data.
  *
  * Prose is plain text with two inline markers, rendered by <RichText>:
- *   `code`  → mono, --ink
+ *   `code`  → <code>
  *   *em*    → <em>
  * Anything typographic (— · ⊕ → ×) is a literal character, as in the design.
  */
@@ -17,7 +17,7 @@ export function isProjectSlug(value: string): value is ProjectSlug {
   return (PROJECT_SLUGS as readonly string[]).includes(value);
 }
 
-/** A small plate. First line is --ink, the rest --ink2. */
+/** A small plate. The first line is the title, the rest are detail. */
 export type DiagramNode = {
   readonly lines: readonly string[];
   readonly accent?: true;
@@ -90,10 +90,8 @@ export type Project = {
   readonly subtitle: string;
   readonly domain: string;
   readonly year: string;
-  readonly image: string;
-  /** JPEG twin of `image` — og:image, where WebP support is still not universal. */
+  /** JPEG for og:image; link unfurlers still can't be relied on for WebP. */
   readonly ogImage: string;
-  readonly imageAlt: string;
   readonly repo: string;
   readonly card: ProjectCard;
   readonly sections: Readonly<Record<WrittenSectionId, readonly Block[]>>;
@@ -109,9 +107,7 @@ const ciphertrace: Project = {
   subtitle: "ML Side-Channel Cryptanalysis",
   domain: "ML research",
   year: "2025",
-  image: "/assets/ciphertrace.webp",
   ogImage: "/assets/ciphertrace.jpg",
-  imageAlt: "CipherTrace attack dashboard",
   repo: "https://github.com/KrishJeswal/CipherTrace",
   card: {
     shelf: "ML",
@@ -355,9 +351,7 @@ const lorerecall: Project = {
   subtitle: "Agentic Second Brain",
   domain: "ML · RAG",
   year: "2025",
-  image: "/assets/lorerecall.webp",
   ogImage: "/assets/lorerecall.jpg",
-  imageAlt: "LoreRecall pipeline interface",
   repo: "https://github.com/KrishJeswal/LoreRecall",
   card: {
     shelf: "ML",
@@ -576,9 +570,7 @@ const glyphmark: Project = {
   subtitle: "Multi-Surface MCP Toolchain",
   domain: "Systems · TypeScript",
   year: "2025",
-  image: "/assets/glyphmark.webp",
   ogImage: "/assets/glyphmark.jpg",
-  imageAlt: "GlyphMark toolchain",
   repo: "https://github.com/KrishJeswal/GlyphMark",
   card: {
     shelf: "SW",
@@ -802,9 +794,7 @@ const pathfindr: Project = {
   subtitle: "Graph-Based Indoor Navigation",
   domain: "Product · React",
   year: "2025",
-  image: "/assets/pathfindr.webp",
   ogImage: "/assets/pathfindr.jpg",
-  imageAlt: "Pathfindr interface",
   repo: "https://github.com/KrishJeswal/Pathfindr",
   card: {
     shelf: "SW",

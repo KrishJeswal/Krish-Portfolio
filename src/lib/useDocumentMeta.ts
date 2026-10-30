@@ -7,14 +7,7 @@ function setTag(selector: string, attr: string, value: string): void {
   if (el) el.setAttribute(attr, value);
 }
 
-/**
- * Keeps the document's metadata in step with the route during client-side
- * navigation. Crawlers never need this — they read the prerendered HTML for
- * whichever URL they fetched — but without it the tab title and canonical
- * would keep whatever the first-loaded page baked in.
- *
- * Reads from the same metaForPath the prerender uses, so the two cannot drift.
- */
+/** Keeps title, description and canonical in step with client-side navigation. */
 export function useDocumentMeta(): void {
   const { pathname } = useLocation();
 
