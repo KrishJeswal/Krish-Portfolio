@@ -1,12 +1,13 @@
 /* ---------- hero ---------- */
 .hero {
-  height: 100svh;
-  min-height: 640px;
+  /* The next sheet overlaps by --sheet-r; keep that overlap below the fold. */
+  height: calc(100svh + var(--sheet-r));
+  min-height: calc(640px + var(--sheet-r));
   display: grid;
   place-items: center;
   perspective: 1600px;
   overflow: hidden;
-  padding: calc(var(--bar-h) + 12px) var(--gutter) 64px;
+  padding: calc(var(--bar-h) + 12px) var(--gutter) calc(64px + var(--sheet-r));
 }
 .hero-stage {
   position: relative;
@@ -949,7 +950,7 @@
   }
   .hero {
     height: auto;
-    min-height: 100svh;
+    min-height: calc(100svh + var(--sheet-r));
     padding-top: calc(var(--bar-h) + 30px);
   }
   .hero-stage {
