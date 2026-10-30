@@ -1,3 +1,5 @@
+import type { ArtKind } from "../components/ink/shapes";
+
 /**
  * The four projects, and the seven-part case study for each, as data.
  *
@@ -65,6 +67,16 @@ export type CaseSectionId = (typeof CASE_SECTIONS)[number]["id"];
 /** The five written sections, in order — `top` and `next` are structural. */
 export type WrittenSectionId = Exclude<CaseSectionId, "top">;
 
+export type ProjectCard = {
+  readonly shelf: string;
+  readonly number: string;
+  readonly label: string;
+  readonly summary: string;
+  readonly stack: string;
+  readonly subjects: string;
+  readonly art: ArtKind;
+};
+
 export type Project = {
   readonly slug: ProjectSlug;
   readonly name: string;
@@ -76,6 +88,7 @@ export type Project = {
   readonly ogImage: string;
   readonly imageAlt: string;
   readonly repo: string;
+  readonly card: ProjectCard;
   readonly sections: Readonly<Record<WrittenSectionId, readonly Block[]>>;
 };
 
@@ -93,6 +106,15 @@ const ciphertrace: Project = {
   ogImage: "/assets/ciphertrace.jpg",
   imageAlt: "CipherTrace attack dashboard",
   repo: "https://github.com/KrishJeswal/CipherTrace",
+  card: {
+    shelf: "ML",
+    number: "01",
+    label: "ML research",
+    summary: "Recovers an AES key byte from the power draw of a masked implementation.",
+    stack: "Python · scikit-learn · XGBoost · SHAP",
+    subjects: "Side-channel attacks · ML — evaluation",
+    art: "trace",
+  },
   sections: {
     capture: [
       { kind: "lead", text: "AES-128 is mathematically sound. The ATMega8515 running it is not." },
@@ -318,6 +340,15 @@ const lorerecall: Project = {
   ogImage: "/assets/lorerecall.jpg",
   imageAlt: "LoreRecall pipeline interface",
   repo: "https://github.com/KrishJeswal/LoreRecall",
+  card: {
+    shelf: "ML",
+    number: "02",
+    label: "ML · retrieval",
+    summary: "Reads everything saved to Notion, crawls the links, then answers questions against it.",
+    stack: "Python · ZenML · LangChain · MongoDB",
+    subjects: "Information retrieval · Agents",
+    art: "rag",
+  },
   sections: {
     capture: [
       { kind: "lead", text: "Point it at a Notion database and it reads everything you meant to read." },
@@ -512,6 +543,15 @@ const glyphmark: Project = {
   ogImage: "/assets/glyphmark.jpg",
   imageAlt: "GlyphMark toolchain",
   repo: "https://github.com/KrishJeswal/GlyphMark",
+  card: {
+    shelf: "SW",
+    number: "01",
+    label: "Systems",
+    summary: "One capability, exposed as a CLI, a local MCP server, a remote one and a Skill.",
+    stack: "TypeScript · Bun · Zod · Hono",
+    subjects: "Agent tooling · API design",
+    art: "hub",
+  },
   sections: {
     capture: [
       { kind: "lead", text: "Write the capability once; expose it through every door an agent might reach for." },
@@ -708,6 +748,15 @@ const pathfindr: Project = {
   ogImage: "/assets/pathfindr.jpg",
   imageAlt: "Pathfindr interface",
   repo: "https://github.com/KrishJeswal/Pathfindr",
+  card: {
+    shelf: "SW",
+    number: "02",
+    label: "Product",
+    summary: "Shortest walking route through a four-floor building, lift included.",
+    stack: "React · Vite · Vitest · Firebase",
+    subjects: "Path finding · Indoor maps",
+    art: "map",
+  },
   sections: {
     capture: [
       { kind: "lead", text: "Pick a start and an end room; it traces the shortest walk through the building." },
