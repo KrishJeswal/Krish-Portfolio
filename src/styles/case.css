@@ -257,9 +257,22 @@ code {
   width: 1.5px;
   background: #a8644a66;
 }
+.metric.ruled {
+  background-image:
+    linear-gradient(var(--card), var(--card)),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(var(--R) - 1px),
+      var(--card-rule) calc(var(--R) - 1px) var(--R)
+    );
+  background-size:
+    100% calc(var(--R) * 2),
+    auto;
+  background-repeat: no-repeat, repeat;
+}
 .metric .v {
   font: 700 50px/60px var(--f-type);
-  translate: 0 -0.08em;
+  translate: 0 0.3em;
   letter-spacing: -0.02em;
   position: relative;
   z-index: 1;
