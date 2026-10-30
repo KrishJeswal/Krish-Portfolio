@@ -4,6 +4,7 @@ import { projects } from "../data/projects";
 import { skillIndex } from "../data/home";
 import { isNumericTable } from "../components/case/Blocks";
 import { RichText } from "../components/RichText";
+import { ruleOffset } from "../lib/useLineGrid";
 
 describe("project cards", () => {
   it("gives every project a unique shelf code", () => {
@@ -46,5 +47,13 @@ describe("RichText", () => {
   it("renders code, emphasis and swaps ⊕ into its fallback font", () => {
     const html = renderToStaticMarkup(<RichText text="fold `v ⊕ m` into *one* component" />);
     expect(html).toBe('fold <code>v <span class="xor">⊕</span> m</code> into <em>one</em> component');
+  });
+});
+
+describe("ruleOffset", () => {
+  it("anchors the rule pattern to the first text line, wrapping into one line height", () => {
+    expect(ruleOffset(130, 100, 22)).toBe(8);
+    expect(ruleOffset(100, 100, 22)).toBe(0);
+    expect(ruleOffset(90, 100, 22)).toBe(12);
   });
 });
